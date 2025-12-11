@@ -3,12 +3,13 @@ import Header from "./Header";
 
 interface LayoutProps {
   children: ReactNode;
+  onOpenSettings: () => void;
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function Layout({ children, onOpenSettings }: LayoutProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50">
-      <Header />
+      <Header onOpenSettings={onOpenSettings} />
 
       <main className="container mx-auto px-4 py-6 pb-8">
         <div className="mx-auto max-w-7xl">{children}</div>

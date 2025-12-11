@@ -2,7 +2,11 @@ import { Calendar, Settings, Languages } from "lucide-react";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { formatDateWithLocale, getTodayDate } from "@/utils/dateHelpers";
 
-export default function Header() {
+interface HeaderProps {
+  onOpenSettings: () => void;
+}
+
+export default function Header({ onOpenSettings }: HeaderProps) {
   const { locale, setLocale } = useSettingsStore();
 
   const toggleLocale = () => {
@@ -62,6 +66,7 @@ export default function Header() {
 
             {/* Botão de Configurações */}
             <button
+              onClick={onOpenSettings}
               className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-green-500 hover:bg-green-50"
               aria-label={locale === "pt-BR" ? "Configurações" : "Settings"}
             >
