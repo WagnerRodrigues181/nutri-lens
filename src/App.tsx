@@ -1,6 +1,7 @@
 import Layout from "./components/common/Layout";
 import DailyOverview from "./components/dashboard/DailyOverview";
 import StreakBadge from "./components/dashboard/StreakBadge";
+import MacrosRing from "./components/dashboard/MacrosRing";
 import { useSettingsStore } from "./store/useSettingsStore";
 
 export default function App() {
@@ -31,6 +32,9 @@ export default function App() {
 
         {/* Metrics Overview */}
         <DailyOverview />
+
+        {/* Macros Progress Rings */}
+        <MacrosRing />
 
         {/* Placeholder for future sections */}
         <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
