@@ -4,6 +4,8 @@ import DailyOverview from "./components/dashboard/DailyOverview";
 import StreakBadge from "./components/dashboard/StreakBadge";
 import MacrosRing from "./components/dashboard/MacrosRing";
 import MealList from "./components/meals/MealList";
+import MealTemplates from "./components/meals/MealTemplates";
+import GoalsModal from "./components/goals/GoalsModal";
 import { useSettingsStore } from "./store/useSettingsStore";
 
 export default function App() {
@@ -42,8 +44,17 @@ export default function App() {
 
           {/* Meals List */}
           <MealList />
+
+          {/* Meal Templates */}
+          <MealTemplates />
         </div>
       </Layout>
+
+      {/* Goals Modal */}
+      <GoalsModal
+        isOpen={isGoalsModalOpen}
+        onClose={() => setIsGoalsModalOpen(false)}
+      />
     </>
   );
 }
