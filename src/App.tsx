@@ -14,6 +14,8 @@ import MealList from "./components/meals/MealList";
 import MealTemplates from "./components/meals/MealTemplates";
 import GoalsModal from "./components/goals/GoalsModal";
 import InsightsList from "./components/insights/InsightsList";
+import AchievementsList from "./components/insights/AchievementsList";
+
 import { useSettingsStore } from "./store/useSettingsStore";
 
 export default function App() {
@@ -41,6 +43,7 @@ export default function App() {
 
           <StreakBadge currentStreak={currentStreak} locale={locale} />
           <InsightsList />
+          <AchievementsList currentStreak={currentStreak} />
           <DateNavigator />
           <DailyOverview />
           <MacrosRing />
