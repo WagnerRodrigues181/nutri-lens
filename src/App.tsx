@@ -15,6 +15,7 @@ import MealTemplates from "./components/meals/MealTemplates";
 import GoalsModal from "./components/goals/GoalsModal";
 import InsightsList from "./components/insights/InsightsList";
 import AchievementsList from "./components/insights/AchievementsList";
+import ExportData from "./components/dashboard/ExportData";
 
 import { useSettingsStore } from "./store/useSettingsStore";
 
@@ -55,6 +56,8 @@ export default function App() {
           <ProgressAreaChart />
           <CaloriesLineChart />
           <MacrosPieChart />
+
+          <ExportData />
         </div>
       </Layout>
 
