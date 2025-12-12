@@ -3,6 +3,8 @@ import Layout from "./components/common/Layout";
 import DailyOverview from "./components/dashboard/DailyOverview";
 import StreakBadge from "./components/dashboard/StreakBadge";
 import MacrosRing from "./components/dashboard/MacrosRing";
+import DateNavigator from "./components/calendar/DateNavigator";
+import CalendarView from "./components/calendar/CalendarView";
 import MealList from "./components/meals/MealList";
 import MealTemplates from "./components/meals/MealTemplates";
 import GoalsModal from "./components/goals/GoalsModal";
@@ -36,6 +38,9 @@ export default function App() {
           {/* Streak Badge */}
           <StreakBadge currentStreak={currentStreak} locale={locale} />
 
+          {/* Date Navigator */}
+          <DateNavigator />
+
           {/* Metrics Overview */}
           <DailyOverview />
 
@@ -47,6 +52,9 @@ export default function App() {
 
           {/* Meal Templates */}
           <MealTemplates />
+
+          {/* Calendar View */}
+          <CalendarView />
         </div>
       </Layout>
 
