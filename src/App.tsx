@@ -3,7 +3,7 @@ import Layout from "./components/common/Layout";
 import DailyOverview from "./components/dashboard/DailyOverview";
 import StreakBadge from "./components/dashboard/StreakBadge";
 import MacrosRing from "./components/dashboard/MacrosRing";
-import GoalsModal from "./components/goals/GoalsModal";
+import MealList from "./components/meals/MealList";
 import { useSettingsStore } from "./store/useSettingsStore";
 
 export default function App() {
@@ -40,22 +40,10 @@ export default function App() {
           {/* Macros Progress Rings */}
           <MacrosRing />
 
-          {/* Placeholder for future sections */}
-          <div className="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-            <p className="text-sm text-gray-500">
-              {locale === "pt-BR"
-                ? "Mais componentes virão aqui..."
-                : "More components coming here..."}
-            </p>
-          </div>
+          {/* Meals List */}
+          <MealList />
         </div>
       </Layout>
-
-      {/* Modal (caso queira ativar agora) */}
-      <GoalsModal
-        isOpen={isGoalsModalOpen}
-        onClose={() => setIsGoalsModalOpen(false)}
-      />
     </>
   );
 }
