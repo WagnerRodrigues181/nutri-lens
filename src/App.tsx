@@ -3,6 +3,7 @@ import Layout from "./components/common/Layout";
 import DailyOverview from "./components/dashboard/DailyOverview";
 import StreakBadge from "./components/dashboard/StreakBadge";
 import MacrosRing from "./components/dashboard/MacrosRing";
+import WeeklySummary from "./components/dashboard/WeeklySummary";
 import DateNavigator from "./components/calendar/DateNavigator";
 import CalendarView from "./components/calendar/CalendarView";
 import MealList from "./components/meals/MealList";
@@ -35,30 +36,24 @@ export default function App() {
             </div>
           </div>
 
-          {/* Streak Badge */}
           <StreakBadge currentStreak={currentStreak} locale={locale} />
 
-          {/* Date Navigator */}
           <DateNavigator />
 
-          {/* Metrics Overview */}
           <DailyOverview />
 
-          {/* Macros Progress Rings */}
           <MacrosRing />
 
-          {/* Meals List */}
           <MealList />
 
-          {/* Meal Templates */}
           <MealTemplates />
 
-          {/* Calendar View */}
           <CalendarView />
+
+          <WeeklySummary />
         </div>
       </Layout>
 
-      {/* Goals Modal */}
       <GoalsModal
         isOpen={isGoalsModalOpen}
         onClose={() => setIsGoalsModalOpen(false)}
