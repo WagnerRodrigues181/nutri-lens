@@ -4,6 +4,7 @@ import DailyOverview from "./components/dashboard/DailyOverview";
 import StreakBadge from "./components/dashboard/StreakBadge";
 import MacrosRing from "./components/dashboard/MacrosRing";
 import WeeklySummary from "./components/dashboard/WeeklySummary";
+import CaloriesLineChart from "./components/charts/CaloriesLineChart";
 import DateNavigator from "./components/calendar/DateNavigator";
 import CalendarView from "./components/calendar/CalendarView";
 import MealList from "./components/meals/MealList";
@@ -15,14 +16,12 @@ export default function App() {
   const { locale } = useSettingsStore();
   const [isGoalsModalOpen, setIsGoalsModalOpen] = useState(false);
 
-  // Temporary streak data (will be calculated later)
   const currentStreak = 0;
 
   return (
     <>
       <Layout onOpenSettings={() => setIsGoalsModalOpen(true)}>
         <div className="space-y-6">
-          {/* Page Title */}
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-3xl font-bold text-gray-900">
@@ -37,20 +36,14 @@ export default function App() {
           </div>
 
           <StreakBadge currentStreak={currentStreak} locale={locale} />
-
           <DateNavigator />
-
           <DailyOverview />
-
           <MacrosRing />
-
           <MealList />
-
           <MealTemplates />
-
           <CalendarView />
-
           <WeeklySummary />
+          <CaloriesLineChart />
         </div>
       </Layout>
 
