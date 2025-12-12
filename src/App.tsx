@@ -4,6 +4,7 @@ import DailyOverview from "./components/dashboard/DailyOverview";
 import StreakBadge from "./components/dashboard/StreakBadge";
 import MacrosRing from "./components/dashboard/MacrosRing";
 import WeeklySummary from "./components/dashboard/WeeklySummary";
+import WeeklyBarChart from "./components/charts/WeeklyBarChart";
 import CaloriesLineChart from "./components/charts/CaloriesLineChart";
 import MacrosPieChart from "./components/charts/MacrosPieChart";
 import DateNavigator from "./components/calendar/DateNavigator";
@@ -44,6 +45,7 @@ export default function App() {
           <MealTemplates />
           <CalendarView />
           <WeeklySummary />
+          <WeeklyBarChart />
           <CaloriesLineChart />
           <MacrosPieChart />
         </div>
