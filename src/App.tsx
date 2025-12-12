@@ -13,6 +13,7 @@ import CalendarView from "./components/calendar/CalendarView";
 import MealList from "./components/meals/MealList";
 import MealTemplates from "./components/meals/MealTemplates";
 import GoalsModal from "./components/goals/GoalsModal";
+import InsightsList from "./components/insights/InsightsList";
 import { useSettingsStore } from "./store/useSettingsStore";
 
 export default function App() {
@@ -39,6 +40,7 @@ export default function App() {
           </div>
 
           <StreakBadge currentStreak={currentStreak} locale={locale} />
+          <InsightsList />
           <DateNavigator />
           <DailyOverview />
           <MacrosRing />

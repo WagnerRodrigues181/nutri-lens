@@ -1,241 +1,204 @@
-import type {
-  Insight,
-  InsightType,
-  DailyNutrition,
-  DailyGoals,
-  GoalsProgress,
-  StreakData,
-  NutritionHistory,
-} from "@/types";
-import { calculateRemaining } from "@/utils/calculations";
-import { getTodayDate, getPreviousDay, parseDate } from "@/utils/dateHelpers";
+import type { Insight, InsightType, DailyGoals, Macros } from "@/types";
+import { calculateGoalsProgress } from "@/utils/calculations";
 
-/**
- * Generate insights based on current day progress
- */
-export const generateDailyInsights = (
-  currentDay: DailyNutrition,
-  goals: DailyGoals,
-  progress: GoalsProgress
-): Insight[] => {
+interface InsightGeneratorParams {
+  totalMacros: Macros & { water: number };
+  goals: DailyGoals;
+  locale: "pt-BR" | "en-US";
+  mealsCount: number;
+  currentStreak: number;
+}
+
+const translations = {
+  "pt-BR": {
+    goalReached: "🎯 Meta atingida!",
+    closeToGoal: "💪 Você está a {percent}% da meta de {nutrient}",
+    exceededGoal: "⚠️ Você excedeu a meta de {nutrient} em {percent}%",
+    lowIntake: "📉 {nutrient}: apenas {percent}% da meta",
+    perfectDay: "🏆 Dia perfeito! Todas as metas foram atingidas!",
+    noMeals: "🍽️ Ainda não há refeições registradas hoje",
+    firstMeal: "✨ Primeira refeição do dia registrada!",
+    goodProgress: "👍 Bom progresso! Continue assim",
+    drinkWater: "💧 Lembre-se de beber mais água ({current}L de {goal}L)",
+    waterGoalReached: "💧 Meta de água atingida!",
+    highProtein: "💪 Alto consumo de proteína hoje!",
+    balancedMacros: "⚖️ Macros bem equilibrados hoje",
+    streak: "🔥 {days} dias consecutivos! Continue assim!",
+    longStreak: "🏆 Incrível! {days} dias de sequência!",
+  },
+  "en-US": {
+    goalReached: "🎯 Goal reached!",
+    closeToGoal: "💪 You're {percent}% of your {nutrient} goal",
+    exceededGoal: "⚠️ You exceeded your {nutrient} goal by {percent}%",
+    lowIntake: "📉 {nutrient}: only {percent}% of goal",
+    perfectDay: "🏆 Perfect day! All goals were met!",
+    noMeals: "🍽️ No meals logged yet today",
+    firstMeal: "✨ First meal of the day logged!",
+    goodProgress: "👍 Good progress! Keep it up",
+    drinkWater: "💧 Remember to drink more water ({current}L of {goal}L)",
+    waterGoalReached: "💧 Water goal reached!",
+    highProtein: "💪 High protein intake today!",
+    balancedMacros: "⚖️ Well-balanced macros today",
+    streak: "🔥 {days} consecutive days! Keep going!",
+    longStreak: "🏆 Amazing! {days} day streak!",
+  },
+};
+
+export const generateInsights = ({
+  totalMacros,
+  goals,
+  locale,
+  mealsCount,
+  currentStreak,
+}: InsightGeneratorParams): Insight[] => {
   const insights: Insight[] = [];
-  const now = new Date().toISOString();
+  const t = translations[locale];
 
-  // Calories insight
-  if (progress.calories >= 95 && progress.calories <= 105) {
-    insights.push({
-      id: crypto.randomUUID(),
-      type: "success",
-      message: `🎯 Você atingiu ${progress.calories}% da meta de calorias hoje!`,
-      timestamp: now,
-    });
-  } else if (progress.calories > 105) {
-    insights.push({
-      id: crypto.randomUUID(),
-      type: "warning",
-      message: `⚠️ Calorias: ${Math.round(currentDay.totalMacros.calories)}/${
-        goals.calories
-      } kcal (+${progress.calories - 100}%)`,
-      timestamp: now,
-    });
-  } else if (progress.calories < 50) {
+  const progress = calculateGoalsProgress(totalMacros, goals);
+
+  if (mealsCount === 0) {
     insights.push({
       id: crypto.randomUUID(),
       type: "info",
-      message: `📊 Você está em ${progress.calories}% da meta. Continue registrando suas refeições!`,
-      timestamp: now,
+      message: t.noMeals,
+      timestamp: new Date().toISOString(),
     });
+    return insights;
   }
 
-  // Protein insight
-  const remainingProtein = calculateRemaining(
-    currentDay.totalMacros.protein,
-    goals.protein
-  );
-  if (progress.protein >= 95 && progress.protein <= 105) {
+  if (mealsCount === 1) {
     insights.push({
       id: crypto.randomUUID(),
       type: "success",
-      message: `💪 Meta de proteína alcançada! ${Math.round(
-        currentDay.totalMacros.protein
-      )}g/${goals.protein}g`,
-      timestamp: now,
-    });
-  } else if (remainingProtein > 0 && progress.calories > 70) {
-    insights.push({
-      id: crypto.randomUUID(),
-      type: "info",
-      message: `💪 Faltam ${Math.round(
-        remainingProtein
-      )}g de proteína para sua meta`,
-      timestamp: now,
+      message: t.firstMeal,
+      timestamp: new Date().toISOString(),
     });
   }
 
-  // Water insight
-  if (progress.water >= 100) {
-    insights.push({
-      id: crypto.randomUUID(),
-      type: "success",
-      message: `💧 Excelente! Você atingiu sua meta de água (${currentDay.water.toFixed(
-        1
-      )}L)`,
-      timestamp: now,
-    });
-  } else if (progress.water < 50) {
-    insights.push({
-      id: crypto.randomUUID(),
-      type: "info",
-      message: `💧 Lembre-se de beber mais água (${currentDay.water.toFixed(
-        1
-      )}L/${goals.water}L)`,
-      timestamp: now,
-    });
-  }
+  const allGoalsMet = Object.values(progress).every((p) => p >= 95 && p <= 105);
 
-  // Carbs excess warning
-  if (progress.carbs > 120) {
-    insights.push({
-      id: crypto.randomUUID(),
-      type: "warning",
-      message: `⚠️ Carboidratos: ${Math.round(currentDay.totalMacros.carbs)}g/${
-        goals.carbs
-      }g (+${progress.carbs - 100}%)`,
-      timestamp: now,
-    });
-  }
-
-  // Fat excess warning
-  if (progress.fat > 120) {
-    insights.push({
-      id: crypto.randomUUID(),
-      type: "warning",
-      message: `⚠️ Gordura: ${Math.round(currentDay.totalMacros.fat)}g/${
-        goals.fat
-      }g (+${progress.fat - 100}%)`,
-      timestamp: now,
-    });
-  }
-
-  // All goals met
-  if (
-    progress.calories >= 95 &&
-    progress.calories <= 105 &&
-    progress.protein >= 95 &&
-    progress.protein <= 105 &&
-    progress.carbs >= 95 &&
-    progress.carbs <= 105 &&
-    progress.fat >= 95 &&
-    progress.fat <= 105 &&
-    progress.water >= 95
-  ) {
+  if (allGoalsMet) {
     insights.push({
       id: crypto.randomUUID(),
       type: "achievement",
-      message: `🏆 Parabéns! Você atingiu todas as suas metas hoje!`,
-      timestamp: now,
+      message: t.perfectDay,
+      icon: "🏆",
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  const checkNutrient = (
+    nutrient: keyof typeof progress,
+    nutrientName: string
+  ) => {
+    const p = progress[nutrient];
+
+    if (p >= 95 && p <= 105) {
+      insights.push({
+        id: crypto.randomUUID(),
+        type: "success",
+        message: t.goalReached.replace("{nutrient}", nutrientName),
+        timestamp: new Date().toISOString(),
+      });
+    } else if (p >= 85 && p < 95) {
+      insights.push({
+        id: crypto.randomUUID(),
+        type: "info",
+        message: t.closeToGoal
+          .replace("{percent}", Math.round(p).toString())
+          .replace("{nutrient}", nutrientName),
+        timestamp: new Date().toISOString(),
+      });
+    } else if (p > 105) {
+      insights.push({
+        id: crypto.randomUUID(),
+        type: "warning",
+        message: t.exceededGoal
+          .replace("{nutrient}", nutrientName)
+          .replace("{percent}", Math.round(p - 100).toString()),
+        timestamp: new Date().toISOString(),
+      });
+    } else if (p < 85) {
+      insights.push({
+        id: crypto.randomUUID(),
+        type: "warning",
+        message: t.lowIntake
+          .replace("{nutrient}", nutrientName)
+          .replace("{percent}", Math.round(p).toString()),
+        timestamp: new Date().toISOString(),
+      });
+    }
+  };
+
+  const nutrientNames = {
+    calories: locale === "pt-BR" ? "calorias" : "calories",
+    protein: locale === "pt-BR" ? "proteína" : "protein",
+    carbs: locale === "pt-BR" ? "carboidratos" : "carbs",
+    fat: locale === "pt-BR" ? "gordura" : "fat",
+  };
+
+  checkNutrient("calories", nutrientNames.calories);
+  checkNutrient("protein", nutrientNames.protein);
+
+  if (progress.water >= 95 && progress.water <= 105) {
+    insights.push({
+      id: crypto.randomUUID(),
+      type: "success",
+      message: t.waterGoalReached,
+      timestamp: new Date().toISOString(),
+    });
+  } else if (progress.water < 80) {
+    insights.push({
+      id: crypto.randomUUID(),
+      type: "info",
+      message: t.drinkWater
+        .replace("{current}", totalMacros.water.toFixed(1))
+        .replace("{goal}", goals.water.toFixed(1)),
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  if (progress.protein > 120) {
+    insights.push({
+      id: crypto.randomUUID(),
+      type: "info",
+      message: t.highProtein,
+      icon: "💪",
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  const macroVariance =
+    Math.abs(progress.protein - 100) +
+    Math.abs(progress.carbs - 100) +
+    Math.abs(progress.fat - 100);
+
+  if (macroVariance < 30 && mealsCount >= 3) {
+    insights.push({
+      id: crypto.randomUUID(),
+      type: "success",
+      message: t.balancedMacros,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  if (currentStreak >= 30) {
+    insights.push({
+      id: crypto.randomUUID(),
+      type: "achievement",
+      message: t.longStreak.replace("{days}", currentStreak.toString()),
+      icon: "🏆",
+      timestamp: new Date().toISOString(),
+    });
+  } else if (currentStreak >= 7) {
+    insights.push({
+      id: crypto.randomUUID(),
+      type: "success",
+      message: t.streak.replace("{days}", currentStreak.toString()),
+      icon: "🔥",
+      timestamp: new Date().toISOString(),
     });
   }
 
   return insights;
-};
-
-/**
- * Calculate streak data (consecutive days with activity)
- */
-export const calculateStreak = (history: NutritionHistory): StreakData => {
-  const today = getTodayDate();
-  let currentStreak = 0;
-  let longestStreak = 0;
-  let tempStreak = 0;
-  let lastActivityDate: string | null = null;
-
-  // Sort dates in descending order (most recent first)
-  const sortedDates = Object.keys(history).sort(
-    (a, b) => parseDate(b).getTime() - parseDate(a).getTime()
-  );
-
-  if (sortedDates.length === 0) {
-    return { currentStreak: 0, longestStreak: 0, lastActivityDate: null };
-  }
-
-  lastActivityDate = sortedDates[0];
-
-  // Calculate current streak (must include today or yesterday)
-  let checkDate = today;
-  while (history[checkDate] && history[checkDate].meals.length > 0) {
-    currentStreak++;
-    checkDate = getPreviousDay(checkDate);
-  }
-
-  // If today has no activity, check if yesterday does
-  if (currentStreak === 0) {
-    checkDate = getPreviousDay(today);
-    if (history[checkDate] && history[checkDate].meals.length > 0) {
-      currentStreak = 1;
-      checkDate = getPreviousDay(checkDate);
-
-      while (history[checkDate] && history[checkDate].meals.length > 0) {
-        currentStreak++;
-        checkDate = getPreviousDay(checkDate);
-      }
-    }
-  }
-
-  // Calculate longest streak
-  sortedDates.forEach((date) => {
-    if (history[date] && history[date].meals.length > 0) {
-      tempStreak++;
-      longestStreak = Math.max(longestStreak, tempStreak);
-    } else {
-      tempStreak = 0;
-    }
-  });
-
-  return {
-    currentStreak,
-    longestStreak,
-    lastActivityDate,
-  };
-};
-
-/**
- * Generate streak insights
- */
-export const generateStreakInsight = (streak: StreakData): Insight | null => {
-  if (streak.currentStreak === 0) return null;
-
-  const messages: Record<number, string> = {
-    3: "🔥 3 dias consecutivos! Continue assim!",
-    7: "🔥 Streak de 7 dias! Você está no caminho certo!",
-    14: "🔥 14 dias de streak! Incrível!",
-    30: "🔥 30 dias de streak! Você é dedicado!",
-    60: "🔥 60 dias de streak! Lendário!",
-    90: "🔥 90 dias de streak! Você é imparável!",
-  };
-
-  const milestones = Object.keys(messages)
-    .map(Number)
-    .sort((a, b) => b - a);
-  const milestone = milestones.find((m) => streak.currentStreak >= m);
-
-  if (milestone) {
-    return {
-      id: crypto.randomUUID(),
-      type: "achievement",
-      message: messages[milestone],
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  if (streak.currentStreak >= 2) {
-    return {
-      id: crypto.randomUUID(),
-      type: "success",
-      message: `🔥 Streak de ${streak.currentStreak} dias! Continue assim!`,
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  return null;
 };
