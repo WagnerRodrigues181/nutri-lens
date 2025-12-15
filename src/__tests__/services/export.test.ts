@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { exportToCSV, exportToJSON } from "@/services/export";
+import {
+  exportToCSV,
+  exportToJSON,
+  exportWeeklyReport,
+} from "@/services/export";
 import { mockNutritionHistory, mockGoals } from "../mockData";
 
 describe("export service", () => {
@@ -129,6 +133,130 @@ describe("export service", () => {
         expect(jsonContent).toHaveProperty("history");
         expect(jsonContent.goals).toEqual(mockGoals);
         expect(jsonContent.history).toEqual(mockNutritionHistory);
+      };
+      if (capturedBlob) reader.readAsText(capturedBlob);
+    });
+  });
+
+  describe("exportWeeklyReport", () => {
+    it("should create download link for weekly report in pt-BR", () => {
+      exportWeeklyReport(
+        mockNutritionHistory,
+        "2024-01-14",
+        "2024-01-15",
+        "pt-BR"
+      );
+
+      expect(createElementSpy).toHaveBeenCalledWith("a");
+      expect(mockLink.href).toBe("blob:mock-url");
+      expect(mockLink.download).toBe("nutrilens-weekly-report.csv");
+      expect(mockLink.click).toHaveBeenCalled();
+      expect(document.body.appendChild).toHaveBeenCalledWith(mockLink);
+      expect(document.body.removeChild).toHaveBeenCalledWith(mockLink);
+      expect(revokeObjectURLSpy).toHaveBeenCalledWith("blob:mock-url");
+    });
+
+    it("should create download link for weekly report in en-US", () => {
+      exportWeeklyReport(
+        mockNutritionHistory,
+        "2024-01-14",
+        "2024-01-15",
+        "en-US"
+      );
+
+      expect(createElementSpy).toHaveBeenCalledWith("a");
+      expect(mockLink.download).toBe("nutrilens-weekly-report.csv");
+      expect(mockLink.click).toHaveBeenCalled();
+    });
+
+    it("should show alert when no data found for period", () => {
+      const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+
+      exportWeeklyReport(
+        mockNutritionHistory,
+        "2025-12-01",
+        "2025-12-07",
+        "pt-BR"
+      );
+
+      expect(alertSpy).toHaveBeenCalledWith(
+        "Nenhum dado encontrado para o período selecionado"
+      );
+      expect(mockLink.click).not.toHaveBeenCalled();
+
+      alertSpy.mockRestore();
+    });
+
+    it("should show alert in en-US when no data found", () => {
+      const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+
+      exportWeeklyReport(
+        mockNutritionHistory,
+        "2025-12-01",
+        "2025-12-07",
+        "en-US"
+      );
+
+      expect(alertSpy).toHaveBeenCalledWith(
+        "No data found for the selected period"
+      );
+
+      alertSpy.mockRestore();
+    });
+
+    it("should format CSV with proper headers and averages in pt-BR", () => {
+      let capturedBlob: Blob | null = null;
+
+      createObjectURLSpy.mockImplementation((blob: Blob) => {
+        capturedBlob = blob;
+        return "blob:mock-url";
+      });
+
+      exportWeeklyReport(
+        mockNutritionHistory,
+        "2024-01-14",
+        "2024-01-15",
+        "pt-BR"
+      );
+
+      expect(capturedBlob).not.toBeNull();
+      expect((capturedBlob as unknown as Blob).type).toBe("text/csv");
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const csvContent = reader.result as string;
+        expect(csvContent).toContain("Data");
+        expect(csvContent).toContain("Dia");
+        expect(csvContent).toContain("MÉDIAS");
+        expect(csvContent).toContain("Média Semanal");
+      };
+      if (capturedBlob) reader.readAsText(capturedBlob);
+    });
+
+    it("should format CSV with proper headers and averages in en-US", () => {
+      let capturedBlob: Blob | null = null;
+
+      createObjectURLSpy.mockImplementation((blob: Blob) => {
+        capturedBlob = blob;
+        return "blob:mock-url";
+      });
+
+      exportWeeklyReport(
+        mockNutritionHistory,
+        "2024-01-14",
+        "2024-01-15",
+        "en-US"
+      );
+
+      expect(capturedBlob).not.toBeNull();
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const csvContent = reader.result as string;
+        expect(csvContent).toContain("Date");
+        expect(csvContent).toContain("Day");
+        expect(csvContent).toContain("AVERAGES");
+        expect(csvContent).toContain("Weekly Average");
       };
       if (capturedBlob) reader.readAsText(capturedBlob);
     });
