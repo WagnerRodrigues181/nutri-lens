@@ -1,6 +1,7 @@
 import { Calendar, Settings, Languages } from "lucide-react";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { formatDateWithLocale, getTodayDate } from "@/utils/dateHelpers";
+import nutrilensIcon from "@/assets/nutrilens-icon2.png";
 
 interface HeaderProps {
   onOpenSettings: () => void;
@@ -24,10 +25,13 @@ export default function Header({ onOpenSettings }: HeaderProps) {
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-lg">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          {/* Logo e Título */}
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-500/30">
-              <span className="text-xl font-bold text-white">🥗</span>
+            <div className="flex h-15 w-15 items-center justify-center">
+              <img
+                src={nutrilensIcon}
+                alt="NutriLens Logo"
+                className="h-12 w-12 object-contain rounded-2xl"
+              />
             </div>
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
@@ -41,9 +45,7 @@ export default function Header({ onOpenSettings }: HeaderProps) {
             </div>
           </div>
 
-          {/* Data e Ações */}
           <div className="flex items-center gap-4">
-            {/* Data Atual */}
             <div className="hidden items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 md:flex">
               <Calendar className="h-4 w-4 text-gray-500" />
               <span className="text-sm font-medium text-gray-700">
@@ -51,7 +53,6 @@ export default function Header({ onOpenSettings }: HeaderProps) {
               </span>
             </div>
 
-            {/* Botão de Idioma */}
             <button
               onClick={toggleLocale}
               className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-green-500 hover:bg-green-50"
@@ -64,7 +65,6 @@ export default function Header({ onOpenSettings }: HeaderProps) {
               <Languages className="h-5 w-5 text-gray-700" />
             </button>
 
-            {/* Botão de Configurações */}
             <button
               onClick={onOpenSettings}
               className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-green-500 hover:bg-green-50"
