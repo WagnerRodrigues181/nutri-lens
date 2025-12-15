@@ -8,6 +8,12 @@ import {
   areSameDay,
   daysBetween,
   getLastNDays,
+  getRelativeDateText,
+  getMonthDays,
+  getWeekDays,
+  getMonthRange,
+  getWeekRange,
+  formatDateWithLocale,
 } from "@/utils/dateHelpers";
 
 describe("dateHelpers", () => {
@@ -97,5 +103,188 @@ describe("dateHelpers", () => {
       expect(days).toHaveLength(1);
       expect(days[0]).toBe(getTodayDate());
     });
+  });
+});
+
+describe("formatDateWithLocale", () => {
+  it("should format date with pt-BR locale", () => {
+    const result = formatDateWithLocale("2024-01-15", "pt-BR");
+    expect(result).toContain("jan");
+    expect(result).toContain("2024");
+  });
+
+  it("should format date with en-US locale", () => {
+    const result = formatDateWithLocale("2024-01-15", "en-US");
+    expect(result).toContain("Jan");
+    expect(result).toContain("2024");
+  });
+
+  it("should accept custom format string", () => {
+    const result = formatDateWithLocale("2024-01-15", "pt-BR", "yyyy-MM-dd");
+    expect(result).toBe("2024-01-15");
+  });
+
+  it("should handle Date object", () => {
+    const date = new Date("2024-01-15");
+    const result = formatDateWithLocale(date, "pt-BR");
+    expect(result).toContain("jan");
+  });
+});
+
+describe("getWeekRange", () => {
+  it("should return week range for string date", () => {
+    const range = getWeekRange("2024-01-15");
+    expect(range.start).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(range.end).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it("should return week range for Date object", () => {
+    const date = new Date("2024-01-15");
+    const range = getWeekRange(date);
+    expect(range.start).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(range.end).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it("should start week on Sunday", () => {
+    const range = getWeekRange("2024-01-15");
+    const start = parseDate(range.start);
+    expect(start.getDay()).toBe(0);
+  });
+
+  it("should end week on Saturday", () => {
+    const range = getWeekRange("2024-01-15");
+    const end = parseDate(range.end);
+    expect(end.getDay()).toBe(6);
+  });
+});
+
+describe("getMonthRange", () => {
+  it("should return month range for string date", () => {
+    const range = getMonthRange("2024-01-15");
+    expect(range.start).toBe("2024-01-01");
+    expect(range.end).toBe("2024-01-31");
+  });
+
+  it("should return month range for Date object", () => {
+    const date = new Date("2024-01-15");
+    const range = getMonthRange(date);
+    expect(range.start).toBe("2024-01-01");
+    expect(range.end).toBe("2024-01-31");
+  });
+
+  it("should handle February in leap year", () => {
+    const range = getMonthRange("2024-02-15");
+    expect(range.start).toBe("2024-02-01");
+    expect(range.end).toBe("2024-02-29");
+  });
+
+  it("should handle February in non-leap year", () => {
+    const range = getMonthRange("2023-02-15");
+    expect(range.start).toBe("2023-02-01");
+    expect(range.end).toBe("2023-02-28");
+  });
+});
+
+describe("getWeekDays", () => {
+  it("should return 7 days for string date", () => {
+    const days = getWeekDays("2024-01-15");
+    expect(days).toHaveLength(7);
+  });
+
+  it("should return 7 days for Date object", () => {
+    const date = new Date("2024-01-15");
+    const days = getWeekDays(date);
+    expect(days).toHaveLength(7);
+  });
+
+  it("should start with Sunday", () => {
+    const days = getWeekDays("2024-01-15");
+    const firstDay = parseDate(days[0]);
+    expect(firstDay.getDay()).toBe(0);
+  });
+
+  it("should end with Saturday", () => {
+    const days = getWeekDays("2024-01-15");
+    const lastDay = parseDate(days[6]);
+    expect(lastDay.getDay()).toBe(6);
+  });
+
+  it("should return consecutive dates", () => {
+    const days = getWeekDays("2024-01-15");
+    for (let i = 1; i < days.length; i++) {
+      const diff = daysBetween(days[i - 1], days[i]);
+      expect(diff).toBe(1);
+    }
+  });
+});
+
+describe("getMonthDays", () => {
+  it("should return all days in month for string date", () => {
+    const days = getMonthDays("2024-01-15");
+    expect(days).toHaveLength(31);
+  });
+
+  it("should return all days in month for Date object", () => {
+    const date = new Date("2024-01-15");
+    const days = getMonthDays(date);
+    expect(days).toHaveLength(31);
+  });
+
+  it("should handle February in leap year", () => {
+    const days = getMonthDays("2024-02-15");
+    expect(days).toHaveLength(29);
+  });
+
+  it("should handle February in non-leap year", () => {
+    const days = getMonthDays("2023-02-15");
+    expect(days).toHaveLength(28);
+  });
+
+  it("should start with first day of month", () => {
+    const days = getMonthDays("2024-01-15");
+    expect(days[0]).toBe("2024-01-01");
+  });
+
+  it("should end with last day of month", () => {
+    const days = getMonthDays("2024-01-15");
+    expect(days[days.length - 1]).toBe("2024-01-31");
+  });
+});
+
+describe("getRelativeDateText", () => {
+  it("should return 'Hoje' for today in pt-BR", () => {
+    const today = getTodayDate();
+    const result = getRelativeDateText(today, "pt-BR");
+    expect(result).toBe("Hoje");
+  });
+
+  it("should return 'Today' for today in en-US", () => {
+    const today = getTodayDate();
+    const result = getRelativeDateText(today, "en-US");
+    expect(result).toBe("Today");
+  });
+
+  it("should return 'Ontem' for yesterday in pt-BR", () => {
+    const yesterday = getPreviousDay(getTodayDate());
+    const result = getRelativeDateText(yesterday, "pt-BR");
+    expect(result).toBe("Ontem");
+  });
+
+  it("should return 'Yesterday' for yesterday in en-US", () => {
+    const yesterday = getPreviousDay(getTodayDate());
+    const result = getRelativeDateText(yesterday, "en-US");
+    expect(result).toBe("Yesterday");
+  });
+
+  it("should return formatted date for other dates in pt-BR", () => {
+    const result = getRelativeDateText("2024-01-15", "pt-BR");
+    expect(result).toContain("jan");
+    expect(result).toContain("2024");
+  });
+
+  it("should return formatted date for other dates in en-US", () => {
+    const result = getRelativeDateText("2024-01-15", "en-US");
+    expect(result).toContain("Jan");
+    expect(result).toContain("2024");
   });
 });

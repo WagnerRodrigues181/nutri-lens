@@ -27,6 +27,13 @@ describe("calculations", () => {
       expect(bmr).toBeLessThan(calculateBMR(mockUserProfile)!);
     });
 
+    it("should calculate BMR for other gender", () => {
+      const profile = { ...mockUserProfile, gender: "other" as const };
+      const bmr = calculateBMR(profile);
+      expect(bmr).toBeGreaterThan(0);
+      expect(bmr).toBeCloseTo(1615.75, 0);
+    });
+
     it("should return null for incomplete profile", () => {
       expect(calculateBMR({})).toBeNull();
     });
@@ -61,6 +68,24 @@ describe("calculations", () => {
       const profile = { ...mockUserProfile, goal: "gain_weight" as const };
       const goal = calculateCalorieGoal(profile);
       expect(goal).toBe(2933);
+    });
+
+    it("should calculate calorie goal for maintain", () => {
+      const profile = { ...mockUserProfile, goal: "maintain" as const };
+      const goal = calculateCalorieGoal(profile);
+      expect(goal).toBe(2633);
+    });
+
+    it("should calculate calorie goal for gain muscle", () => {
+      const profile = { ...mockUserProfile, goal: "gain_muscle" as const };
+      const goal = calculateCalorieGoal(profile);
+      expect(goal).toBe(3033);
+    });
+
+    it("should return null when goal is not defined", () => {
+      const profile = { ...mockUserProfile, goal: undefined };
+      const goal = calculateCalorieGoal(profile);
+      expect(goal).toBeNull();
     });
   });
 

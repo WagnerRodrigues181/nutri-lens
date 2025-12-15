@@ -7,6 +7,8 @@ import {
   formatPercentage,
   formatMealCategory,
   formatCompactNumber,
+  formatTime,
+  formatDate,
 } from "@/utils/formatters";
 
 describe("formatters", () => {
@@ -118,5 +120,53 @@ describe("formatters", () => {
     it("should handle large numbers", () => {
       expect(formatCompactNumber(15000)).toBe("15.0K");
     });
+  });
+});
+
+describe("formatDate", () => {
+  it("should format date in pt-BR locale", () => {
+    const result = formatDate("2024-01-15", "pt-BR");
+    expect(result).toContain("jan");
+    expect(result).toContain("2024");
+  });
+
+  it("should format date in en-US locale", () => {
+    const result = formatDate("2024-01-15", "en-US");
+    expect(result).toContain("Jan");
+    expect(result).toContain("2024");
+  });
+
+  it("should handle Date object", () => {
+    const date = new Date("2024-01-15");
+    const result = formatDate(date, "pt-BR");
+    expect(result).toContain("jan");
+    expect(result).toContain("2024");
+  });
+
+  it("should use pt-BR as default locale", () => {
+    const result = formatDate("2024-01-15");
+    expect(result).toContain("jan");
+  });
+});
+
+describe("formatTime", () => {
+  it("should format time in pt-BR locale", () => {
+    const result = formatTime("2024-01-15T14:30:00", "pt-BR");
+    expect(result).toMatch(/14:30/);
+  });
+
+  it("should format time in en-US locale", () => {
+    const result = formatTime("2024-01-15T14:30:00", "en-US");
+    expect(result).toMatch(/2:30|14:30/);
+  });
+
+  it("should handle morning times", () => {
+    const result = formatTime("2024-01-15T09:15:00", "pt-BR");
+    expect(result).toMatch(/09:15/);
+  });
+
+  it("should use pt-BR as default locale", () => {
+    const result = formatTime("2024-01-15T14:30:00");
+    expect(result).toMatch(/14:30/);
   });
 });
