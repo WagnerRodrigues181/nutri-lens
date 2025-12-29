@@ -1,8 +1,10 @@
 import { CheckCircle, AlertCircle, Info, Trophy } from "lucide-react";
+import { motion } from "framer-motion";
 import type { Insight } from "@/types";
 
 interface InsightCardProps {
   insight: Insight;
+  delay?: number;
 }
 
 const typeConfig = {
@@ -36,12 +38,16 @@ const typeConfig = {
   },
 };
 
-export default function InsightCard({ insight }: InsightCardProps) {
+export default function InsightCard({ insight, delay = 0 }: InsightCardProps) {
   const config = typeConfig[insight.type];
   const Icon = config.icon;
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4, delay }}
       className={`flex items-start gap-3 rounded-lg border ${config.borderColor} ${config.bgColor} p-4 transition-all hover:shadow-md`}
     >
       {insight.icon ? (
@@ -52,6 +58,6 @@ export default function InsightCard({ insight }: InsightCardProps) {
       <p className={`text-sm font-medium ${config.textColor}`}>
         {insight.message}
       </p>
-    </div>
+    </motion.div>
   );
 }

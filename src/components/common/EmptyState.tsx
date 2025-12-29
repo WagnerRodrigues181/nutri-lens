@@ -1,4 +1,5 @@
 import { ComponentType } from "react";
+import { motion } from "framer-motion";
 
 interface EmptyStateProps {
   icon: ComponentType<{ className?: string }>;
@@ -17,22 +18,34 @@ export default function EmptyState({
   action,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center">
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center"
+    >
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: "spring", duration: 0.6, delay: 0.2 }}
+        className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200"
+      >
         <Icon className="h-8 w-8 text-gray-400" />
-      </div>
+      </motion.div>
 
       <h3 className="mb-2 text-lg font-semibold text-gray-900">{title}</h3>
       <p className="mb-6 max-w-sm text-sm text-gray-600">{description}</p>
 
       {action && (
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={action.onClick}
           className="rounded-lg bg-green-500 px-6 py-2.5 font-medium text-white transition-all hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/30"
         >
           {action.label}
-        </button>
+        </motion.button>
       )}
-    </div>
+    </motion.div>
   );
 }

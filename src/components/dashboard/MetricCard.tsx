@@ -1,5 +1,6 @@
 import { ComponentType } from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface MetricCardProps {
   icon: ComponentType<{ className?: string }>;
@@ -8,6 +9,7 @@ interface MetricCardProps {
   goal: string;
   progress: number;
   color: "green" | "blue" | "amber" | "red" | "indigo";
+  delay?: number;
 }
 
 const colorClasses = {
@@ -50,10 +52,10 @@ export default function MetricCard({
   goal,
   progress,
   color,
+  delay = 0,
 }: MetricCardProps) {
   const colors = colorClasses[color];
 
-  // Determinar tendência
   const getTrendIcon = () => {
     if (progress >= 95 && progress <= 105) {
       return <Minus className="h-4 w-4 text-gray-500" />;
@@ -71,28 +73,45 @@ export default function MetricCard({
   };
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-lg hover:shadow-gray-200/50">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.3, delay, ease: "easeOut" }}
+      className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-lg hover:shadow-gray-200/50"
+    >
       {/* Icon */}
-      <div
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.3, delay: delay + 0.1, type: "spring" }}
         className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${colors.bg} ring-4 ${colors.ring}`}
       >
         <Icon className={`h-6 w-6 ${colors.icon}`} />
-      </div>
+      </motion.div>
 
       {/* Label */}
       <p className="mb-1 text-sm font-medium text-gray-600">{label}</p>
 
       {/* Value and Goal */}
       <div className="mb-3 flex items-baseline gap-2">
-        <span className="text-3xl font-bold text-gray-900">{value}</span>
+        <motion.span
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: delay + 0.2 }}
+          className="text-3xl font-bold text-gray-900"
+        >
+          {value}
+        </motion.span>
         <span className="text-sm text-gray-500">/ {goal}</span>
       </div>
 
       {/* Progress Bar */}
       <div className="mb-3 h-2 w-full overflow-hidden rounded-full bg-gray-100">
-        <div
-          className={`h-full transition-all duration-500 ${getProgressColor()}`}
-          style={{ width: `${Math.min(progress, 100)}%` }}
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${Math.min(progress, 100)}%` }}
+          transition={{ duration: 0.8, delay: delay + 0.3, ease: "easeOut" }}
+          className={`h-full ${getProgressColor()}`}
         />
       </div>
 
@@ -103,6 +122,6 @@ export default function MetricCard({
         </span>
         <div className="flex items-center gap-1">{getTrendIcon()}</div>
       </div>
-    </div>
+    </motion.div>
   );
 }

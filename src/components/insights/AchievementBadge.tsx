@@ -1,17 +1,23 @@
 import { Lock } from "lucide-react";
+import { motion } from "framer-motion";
 import type { Achievement } from "@/types";
 
 interface AchievementBadgeProps {
   achievement: Achievement;
+  delay?: number;
 }
 
 export default function AchievementBadge({
   achievement,
+  delay = 0,
 }: AchievementBadgeProps) {
   const { title, description, icon, isUnlocked } = achievement;
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4, delay }}
       className={`relative overflow-hidden rounded-xl border p-4 transition-all ${
         isUnlocked
           ? "border-yellow-300 bg-gradient-to-br from-yellow-50 to-amber-50 shadow-md hover:shadow-lg"
@@ -52,6 +58,6 @@ export default function AchievementBadge({
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

@@ -1,4 +1,5 @@
 import { Flame } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface StreakBadgeProps {
   currentStreak: number;
@@ -27,10 +28,19 @@ export default function StreakBadge({
   const t = translations[locale];
 
   return (
-    <div className="flex items-center gap-4 rounded-2xl border border-gray-200 bg-gradient-to-br from-orange-50 to-red-50 p-6 shadow-sm">
-      {/* Fire Icon with Animation */}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="flex items-center gap-4 rounded-2xl border border-gray-200 bg-gradient-to-br from-orange-50 to-red-50 p-6 shadow-sm"
+    >
+      {/* Fire Icon */}
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-lg">
-        <Flame className="h-8 w-8 text-orange-500" />
+        <Flame
+          className={`h-8 w-8 ${
+            currentStreak > 0 ? "text-orange-500" : "text-gray-400"
+          }`}
+        />
       </div>
 
       {/* Streak Info */}
@@ -55,6 +65,6 @@ export default function StreakBadge({
           </span>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

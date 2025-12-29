@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Plus, UtensilsCrossed } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useNutritionStore } from "@/store/useNutritionStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import MealCard from "./MealCard";
@@ -51,7 +52,6 @@ export default function MealList() {
     snack: t.snack,
   };
 
-  // Group meals by category
   const mealsByCategory = meals.reduce((acc, meal) => {
     if (!acc[meal.category]) {
       acc[meal.category] = [];
@@ -78,17 +78,24 @@ export default function MealList() {
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+    >
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">{t.title}</h3>
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handleAddNew}
           className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/30"
         >
           <Plus className="h-4 w-4" />
           {t.addMeal}
-        </button>
+        </motion.button>
       </div>
 
       {/* Empty State */}
@@ -112,21 +119,28 @@ export default function MealList() {
             if (categoryMeals.length === 0) return null;
 
             return (
-              <div key={category}>
+              <motion.div
+                key={category}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
                 <h4 className="mb-3 text-sm font-semibold text-gray-700">
                   {categoryLabels[category]}
                 </h4>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {categoryMeals.map((meal) => (
-                    <MealCard
-                      key={meal.id}
-                      meal={meal}
-                      onEdit={handleEdit}
-                      onDelete={deleteMeal}
-                    />
-                  ))}
-                </div>
-              </div>
+                <AnimatePresence mode="popLayout">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {categoryMeals.map((meal) => (
+                      <MealCard
+                        key={meal.id}
+                        meal={meal}
+                        onEdit={handleEdit}
+                        onDelete={deleteMeal}
+                      />
+                    ))}
+                  </div>
+                </AnimatePresence>
+              </motion.div>
             );
           })}
         </div>
@@ -134,6 +148,6 @@ export default function MealList() {
 
       {/* Meal Form Modal */}
       {isFormOpen && <MealForm meal={editingMeal} onClose={handleCloseForm} />}
-    </div>
+    </motion.div>
   );
 }

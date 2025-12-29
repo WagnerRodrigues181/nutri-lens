@@ -35,7 +35,6 @@ export default function DailyOverview() {
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      {/* Calories */}
       <MetricCard
         icon={Flame}
         label={t.calories}
@@ -43,9 +42,9 @@ export default function DailyOverview() {
         goal={formatCalories(goals.calories).replace(" kcal", "")}
         progress={progress.calories}
         color="green"
+        delay={0}
       />
 
-      {/* Protein */}
       <MetricCard
         icon={Beef}
         label={t.protein}
@@ -53,9 +52,9 @@ export default function DailyOverview() {
         goal={formatMacro(goals.protein).replace("g", "")}
         progress={progress.protein}
         color="red"
+        delay={0.1}
       />
 
-      {/* Carbs */}
       <MetricCard
         icon={Wheat}
         label={t.carbs}
@@ -63,9 +62,9 @@ export default function DailyOverview() {
         goal={formatMacro(goals.carbs).replace("g", "")}
         progress={progress.carbs}
         color="amber"
+        delay={0.2}
       />
 
-      {/* Fat */}
       <MetricCard
         icon={Droplet}
         label={t.fat}
@@ -73,9 +72,9 @@ export default function DailyOverview() {
         goal={formatMacro(goals.fat).replace("g", "")}
         progress={progress.fat}
         color="indigo"
+        delay={0.3}
       />
 
-      {/* Water */}
       <MetricCard
         icon={Droplets}
         label={t.water}
@@ -83,6 +82,7 @@ export default function DailyOverview() {
         goal={formatWater(goals.water, locale).replace("L", "")}
         progress={progress.water}
         color="blue"
+        delay={0.4}
       />
     </div>
   );

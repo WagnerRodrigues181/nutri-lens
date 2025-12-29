@@ -14,6 +14,7 @@ import { useNutritionStore } from "@/store/useNutritionStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { formatMealCategory } from "@/utils/formatters";
 import type { MealTemplate, MealCategory } from "@/types";
+import { motion } from "framer-motion";
 
 interface TemplateFormData {
   name: string;
@@ -34,12 +35,10 @@ export default function MealTemplates() {
     addMealFromTemplate,
   } = useNutritionStore();
   const { locale } = useSettingsStore();
-
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<
     MealTemplate | undefined
   >();
-
   const [formData, setFormData] = useState<TemplateFormData>({
     name: "",
     category: "breakfast",
@@ -88,7 +87,6 @@ export default function MealTemplates() {
       namePlaceholder: "Ex: Chicken with sweet potato",
     },
   };
-
   const t = translations[locale];
 
   const handleEdit = (template: MealTemplate) => {
@@ -110,7 +108,6 @@ export default function MealTemplates() {
       locale === "pt-BR"
         ? "Tem certeza que deseja deletar este template?"
         : "Are you sure you want to delete this template?";
-
     if (confirm(message)) {
       deleteTemplate(id);
     }
@@ -122,13 +119,11 @@ export default function MealTemplates() {
 
   const handleSubmit = () => {
     if (!formData.name.trim()) return;
-
     if (editingTemplate) {
       updateTemplate(editingTemplate.id, formData);
     } else {
       addTemplate(formData);
     }
-
     handleCloseForm();
   };
 
@@ -181,7 +176,6 @@ export default function MealTemplates() {
           </button>
         </div>
       </div>
-
       {/* Templates List */}
       {templates.length === 0 ? (
         <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center">
@@ -214,7 +208,6 @@ export default function MealTemplates() {
               </div>
             </div>
           )}
-
           {/* Regular Templates */}
           {regularTemplates.length > 0 && (
             <div>
@@ -235,7 +228,6 @@ export default function MealTemplates() {
           )}
         </div>
       )}
-
       {/* Template Form Modal */}
       {isFormOpen && (
         <TemplateFormModal
@@ -270,20 +262,30 @@ function TemplateCard({
   addLabel,
 }: TemplateCardProps) {
   return (
-    <div className="group relative rounded-lg border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 transition-all hover:shadow-md">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      whileHover={{ y: -4 }}
+      transition={{ duration: 0.2 }}
+      className="group relative rounded-lg border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 transition-all hover:shadow-md"
+    >
       {template.isFavorite && (
-        <div className="absolute right-2 top-2">
+        <motion.div
+          initial={{ scale: 0, rotate: -180 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: "spring", duration: 0.5 }}
+          className="absolute right-2 top-2"
+        >
           <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
-        </div>
+        </motion.div>
       )}
-
       <div className="mb-3">
         <h4 className="font-semibold text-gray-900">{template.name}</h4>
         <p className="text-xs text-gray-600">
           {formatMealCategory(template.category, locale)}
         </p>
       </div>
-
       <div className="mb-3 grid grid-cols-4 gap-2">
         <div className="flex flex-col items-center rounded bg-white p-1.5">
           <Flame className="mb-0.5 h-3 w-3 text-green-600" />
@@ -310,7 +312,6 @@ function TemplateCard({
           </span>
         </div>
       </div>
-
       <div className="flex gap-2">
         <button
           onClick={() => onAddToDay(template.id)}
@@ -331,7 +332,7 @@ function TemplateCard({
           <Trash2 className="h-3.5 w-3.5" />
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -397,10 +398,8 @@ function TemplateFormModal({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-
       <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-6">
         <h3 className="mb-4 text-xl font-bold">{isEditing ? t.edit : t.add}</h3>
-
         <div className="space-y-4">
           <div>
             <label className="mb-2 block text-sm font-medium">{t.name}</label>
@@ -414,7 +413,6 @@ function TemplateFormModal({
               className="w-full rounded-lg border border-gray-300 px-4 py-2.5"
             />
           </div>
-
           <div className="grid grid-cols-4 gap-2">
             {categories.map((cat) => (
               <button
@@ -435,7 +433,6 @@ function TemplateFormModal({
               </button>
             ))}
           </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="mb-2 block text-sm">Calorias</label>
@@ -497,7 +494,6 @@ function TemplateFormModal({
               />
             </div>
           </div>
-
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -513,7 +509,6 @@ function TemplateFormModal({
             </label>
           </div>
         </div>
-
         <div className="mt-6 flex gap-3">
           <button
             onClick={onClose}
