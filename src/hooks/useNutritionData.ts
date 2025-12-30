@@ -1,5 +1,5 @@
 import { useNutritionStore } from "@/store/useNutritionStore";
-import { useSettingsStore } from "@/store/useSettingsStore";
+// import { useSettingsStore } from "@/store/useSettingsStore";
 import { getLastNDays } from "@/utils/dateHelpers";
 import type { Macros } from "@/types";
 
@@ -15,7 +15,7 @@ interface DayData {
 
 export const useNutritionData = () => {
   const { history, currentDate } = useNutritionStore();
-  const { goals } = useSettingsStore();
+  // const { goals } = useSettingsStore();
 
   /**
    * Get data for the last N days

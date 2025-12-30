@@ -1,7 +1,7 @@
 import { Calendar, Settings, Languages } from "lucide-react";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { formatDateWithLocale, getTodayDate } from "@/utils/dateHelpers";
-import nutrilensIcon from "@/assets/nutrilens-icon2.png";
+import nutrilensIcon from "@/assets/nutrilens-icon3.png";
 
 interface HeaderProps {
   onOpenSettings: () => void;

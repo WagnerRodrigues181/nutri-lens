@@ -17,11 +17,14 @@ import InsightsList from "./components/insights/InsightsList";
 import AchievementsList from "./components/insights/AchievementsList";
 import ExportData from "./components/dashboard/ExportData";
 import StatisticsPanel from "./components/dashboard/StatisticsPanel";
+import { ToastContainer } from "./components/common/Toast";
 
 import { useSettingsStore } from "./store/useSettingsStore";
+import { useToast } from "./hooks/useToast";
 
 export default function App() {
   const { locale } = useSettingsStore();
+  const { toasts, removeToast } = useToast();
   const [isGoalsModalOpen, setIsGoalsModalOpen] = useState(false);
 
   const currentStreak = 0;
@@ -68,6 +71,9 @@ export default function App() {
         isOpen={isGoalsModalOpen}
         onClose={() => setIsGoalsModalOpen(false)}
       />
+
+      {/* Toast Notifications */}
+      <ToastContainer toasts={toasts} onClose={removeToast} />
     </>
   );
 }
