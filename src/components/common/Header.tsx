@@ -1,7 +1,9 @@
-import { Calendar, Settings, Languages } from "lucide-react";
+import { useState } from "react";
+import { Calendar, Settings, Languages, Info } from "lucide-react";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { formatDateWithLocale, getTodayDate } from "@/utils/dateHelpers";
 import nutrilensIcon from "@/assets/nutrilens-icon3.png";
+import KeyboardShortcutsPopup from "./KeyboardShortcutsPopup";
 
 interface HeaderProps {
   onOpenSettings: () => void;
@@ -9,9 +11,15 @@ interface HeaderProps {
 
 export default function Header({ onOpenSettings }: HeaderProps) {
   const { locale, setLocale } = useSettingsStore();
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
 
   const toggleLocale = () => {
-    setLocale(locale === "pt-BR" ? "en-US" : "pt-BR");
+    const newLocale = locale === "pt-BR" ? "en-US" : "pt-BR";
+    setLocale(newLocale);
+  };
+
+  const toggleShortcuts = () => {
+    setIsShortcutsOpen((prev) => !prev);
   };
 
   const today = getTodayDate();
@@ -21,60 +29,120 @@ export default function Header({ onOpenSettings }: HeaderProps) {
     "EEEE, dd 'de' MMMM 'de' yyyy"
   );
 
+  const translations = {
+    "pt-BR": {
+      appTitle: "NutriLens - Rastreador Inteligente de Dieta",
+      subtitle: "Rastreador Inteligente de Dieta",
+      currentDate: `Data atual: ${formattedDate}`,
+      switchLanguage: "Mudar idioma para Inglês",
+      openSettings: "Abrir configurações",
+      keyboardShortcuts: "Ver atalhos de teclado",
+    },
+    "en-US": {
+      appTitle: "NutriLens - Smart Diet Tracker",
+      subtitle: "Smart Diet Tracker",
+      currentDate: `Current date: ${formattedDate}`,
+      switchLanguage: "Switch language to Portuguese",
+      openSettings: "Open settings",
+      keyboardShortcuts: "View keyboard shortcuts",
+    },
+  };
+
+  const t = translations[locale];
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-lg">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-15 w-15 items-center justify-center">
-              <img
-                src={nutrilensIcon}
-                alt="NutriLens Logo"
-                className="h-12 w-12 object-contain rounded-2xl"
-              />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                {locale === "pt-BR" ? "NutriLens" : "NutriLens"}
-              </h1>
-              <p className="text-xs text-gray-500">
-                {locale === "pt-BR"
-                  ? "Rastreador Inteligente de Dieta"
-                  : "Smart Diet Tracker"}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="hidden items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 md:flex">
-              <Calendar className="h-4 w-4 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">
-                {formattedDate}
-              </span>
+    <>
+      <header
+        className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-lg"
+        role="banner"
+      >
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo and Title */}
+            <div className="flex items-center gap-3">
+              <div className="flex h-15 w-15 items-center justify-center">
+                <img
+                  src={nutrilensIcon}
+                  alt="NutriLens Logo"
+                  className="h-12 w-12 rounded-2xl object-contain"
+                />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  {locale === "pt-BR" ? "NutriLens" : "NutriLens"}
+                </h1>
+                <p className="text-xs text-gray-500">{t.subtitle}</p>
+              </div>
             </div>
 
-            <button
-              onClick={toggleLocale}
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-green-500 hover:bg-green-50"
-              aria-label={
-                locale === "pt-BR"
-                  ? "Mudar para inglês"
-                  : "Switch to Portuguese"
-              }
+            {/* Actions */}
+            <nav
+              className="flex items-center gap-4"
+              aria-label="Main navigation"
             >
-              <Languages className="h-5 w-5 text-gray-700" />
-            </button>
+              {/* Current Date Display */}
+              <div
+                className="hidden items-center gap-2 rounded-lg bg-gray-50 px-3 py-2 md:flex"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                <Calendar
+                  className="h-4 w-4 text-gray-500"
+                  aria-hidden="true"
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  <span className="sr-only">{t.currentDate}</span>
+                  <span aria-hidden="true">{formattedDate}</span>
+                </span>
+              </div>
 
-            <button
-              onClick={onOpenSettings}
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-green-500 hover:bg-green-50"
-              aria-label={locale === "pt-BR" ? "Configurações" : "Settings"}
-            >
-              <Settings className="h-5 w-5 text-gray-700" />
-            </button>
+              {/* Keyboard Shortcuts Button */}
+              <button
+                onClick={toggleShortcuts}
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                aria-label={t.keyboardShortcuts}
+                title={t.keyboardShortcuts}
+                aria-expanded={isShortcutsOpen}
+                aria-controls="keyboard-shortcuts-popup"
+              >
+                <Info className="h-5 w-5 text-gray-700" aria-hidden="true" />
+              </button>
+
+              {/* Language Toggle */}
+              <button
+                onClick={toggleLocale}
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                aria-label={t.switchLanguage}
+                title={t.switchLanguage}
+              >
+                <Languages
+                  className="h-5 w-5 text-gray-700"
+                  aria-hidden="true"
+                />
+              </button>
+
+              {/* Settings Button */}
+              <button
+                onClick={onOpenSettings}
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-green-500 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                aria-label={t.openSettings}
+                title={t.openSettings}
+              >
+                <Settings
+                  className="h-5 w-5 text-gray-700"
+                  aria-hidden="true"
+                />
+              </button>
+            </nav>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Keyboard Shortcuts Popup */}
+      <KeyboardShortcutsPopup
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
+      />
+    </>
   );
 }

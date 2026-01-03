@@ -1,4 +1,4 @@
-import { ComponentType } from "react";
+import { ComponentType, memo } from "react";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -45,7 +45,7 @@ const colorClasses = {
   },
 };
 
-export default function MetricCard({
+function MetricCard({
   icon: Icon,
   label,
   value,
@@ -58,12 +58,24 @@ export default function MetricCard({
 
   const getTrendIcon = () => {
     if (progress >= 95 && progress <= 105) {
-      return <Minus className="h-4 w-4 text-gray-500" />;
+      return <Minus className="h-4 w-4 text-gray-500" aria-hidden="true" />;
     }
     if (progress < 95) {
-      return <TrendingDown className="h-4 w-4 text-amber-500" />;
+      return (
+        <TrendingDown className="h-4 w-4 text-amber-500" aria-hidden="true" />
+      );
     }
-    return <TrendingUp className="h-4 w-4 text-red-500" />;
+    return <TrendingUp className="h-4 w-4 text-red-500" aria-hidden="true" />;
+  };
+
+  const getTrendLabel = () => {
+    if (progress >= 95 && progress <= 105) {
+      return "on target";
+    }
+    if (progress < 95) {
+      return "below target";
+    }
+    return "above target";
   };
 
   const getProgressColor = () => {
@@ -72,12 +84,17 @@ export default function MetricCard({
     return "bg-red-500";
   };
 
+  const progressValue = Math.round(progress);
+  const progressDescription = `${label}: ${value} of ${goal}, ${progressValue}% complete, ${getTrendLabel()}`;
+
   return (
-    <motion.div
+    <motion.article
       initial={{ opacity: 0, scale: 0.95, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.3, delay, ease: "easeOut" }}
       className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:shadow-lg hover:shadow-gray-200/50"
+      role="article"
+      aria-label={progressDescription}
     >
       {/* Icon */}
       <motion.div
@@ -85,12 +102,18 @@ export default function MetricCard({
         animate={{ scale: 1 }}
         transition={{ duration: 0.3, delay: delay + 0.1, type: "spring" }}
         className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl ${colors.bg} ring-4 ${colors.ring}`}
+        aria-hidden="true"
       >
         <Icon className={`h-6 w-6 ${colors.icon}`} />
       </motion.div>
 
       {/* Label */}
-      <p className="mb-1 text-sm font-medium text-gray-600">{label}</p>
+      <p
+        className="mb-1 text-sm font-medium text-gray-600"
+        id={`label-${label}`}
+      >
+        {label}
+      </p>
 
       {/* Value and Goal */}
       <div className="mb-3 flex items-baseline gap-2">
@@ -99,14 +122,24 @@ export default function MetricCard({
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3, delay: delay + 0.2 }}
           className="text-3xl font-bold text-gray-900"
+          aria-describedby={`label-${label}`}
         >
           {value}
         </motion.span>
-        <span className="text-sm text-gray-500">/ {goal}</span>
+        <span className="text-sm text-gray-500" aria-label={`goal ${goal}`}>
+          / {goal}
+        </span>
       </div>
 
       {/* Progress Bar */}
-      <div className="mb-3 h-2 w-full overflow-hidden rounded-full bg-gray-100">
+      <div
+        className="mb-3 h-2 w-full overflow-hidden rounded-full bg-gray-100"
+        role="progressbar"
+        aria-valuenow={progressValue}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={`${label} progress`}
+      >
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${Math.min(progress, 100)}%` }}
@@ -115,13 +148,23 @@ export default function MetricCard({
         />
       </div>
 
-      {/* Progress Percentage */}
+      {/* Progress Percentage and Trend */}
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-gray-600">
-          {Math.round(progress)}%
+        <span
+          className="text-xs font-medium text-gray-600"
+          aria-label={`${progressValue} percent complete`}
+        >
+          {progressValue}%
         </span>
-        <div className="flex items-center gap-1">{getTrendIcon()}</div>
+        <div className="flex items-center gap-1" aria-label={getTrendLabel()}>
+          {getTrendIcon()}
+        </div>
       </div>
-    </motion.div>
+
+      {/* Screen Reader Only Description */}
+      <span className="sr-only">{progressDescription}</span>
+    </motion.article>
   );
 }
+
+export default memo(MetricCard);
