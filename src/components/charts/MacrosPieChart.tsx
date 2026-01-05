@@ -53,8 +53,10 @@ export default function MacrosPieChart() {
     if (active && payload && payload.length) {
       const data = payload[0];
       return (
-        <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
-          <p className="text-sm font-semibold text-gray-900">{data.name}</p>
+        <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+            {data.name}
+          </p>
           <p
             className="mt-1 text-lg font-bold"
             style={{ color: data.payload.color }}
@@ -96,14 +98,18 @@ export default function MacrosPieChart() {
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">{t.title}</h3>
-          <p className="mt-1 text-sm text-gray-600">{t.subtitle}</p>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {t.title}
+          </h3>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            {t.subtitle}
+          </p>
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50">
-          <Activity className="h-6 w-6 text-indigo-600" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/30">
+          <Activity className="h-6 w-6 text-indigo-600 dark:text-indigo-500" />
         </div>
       </div>
 
@@ -135,21 +141,23 @@ export default function MacrosPieChart() {
         </ResponsiveContainer>
       ) : (
         <div className="flex h-[300px] items-center justify-center">
-          <p className="text-sm text-gray-500">{t.noData}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{t.noData}</p>
         </div>
       )}
 
       {hasData && (
-        <div className="mt-6 grid grid-cols-3 gap-4 border-t border-gray-200 pt-6">
+        <div className="mt-6 grid grid-cols-3 gap-4 border-t border-gray-200 pt-6 dark:border-gray-700">
           <div className="text-center">
             <div className="mb-1 flex items-center justify-center gap-2">
               <div className="h-3 w-3 rounded-full bg-red-500" />
-              <span className="text-xs text-gray-600">{t.protein}</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400">
+                {t.protein}
+              </span>
             </div>
-            <p className="text-lg font-bold text-gray-900">
+            <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
               {distribution.protein}%
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               {totalMacros.protein.toFixed(1)}g
             </p>
           </div>
@@ -157,12 +165,14 @@ export default function MacrosPieChart() {
           <div className="text-center">
             <div className="mb-1 flex items-center justify-center gap-2">
               <div className="h-3 w-3 rounded-full bg-amber-500" />
-              <span className="text-xs text-gray-600">{t.carbs}</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400">
+                {t.carbs}
+              </span>
             </div>
-            <p className="text-lg font-bold text-gray-900">
+            <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
               {distribution.carbs}%
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               {totalMacros.carbs.toFixed(1)}g
             </p>
           </div>
@@ -170,12 +180,14 @@ export default function MacrosPieChart() {
           <div className="text-center">
             <div className="mb-1 flex items-center justify-center gap-2">
               <div className="h-3 w-3 rounded-full bg-indigo-500" />
-              <span className="text-xs text-gray-600">{t.fat}</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400">
+                {t.fat}
+              </span>
             </div>
-            <p className="text-lg font-bold text-gray-900">
+            <p className="text-lg font-bold text-gray-900 dark:text-gray-100">
               {distribution.fat}%
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               {totalMacros.fat.toFixed(1)}g
             </p>
           </div>

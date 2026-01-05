@@ -68,6 +68,7 @@ function CircularProgress({
           r={radius}
           fill="none"
           stroke="#e5e7eb"
+          className="dark:stroke-gray-700"
           strokeWidth={strokeWidth}
         />
 
@@ -98,12 +99,16 @@ function CircularProgress({
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: delay + 0.5 }}
-            className="text-2xl font-bold text-gray-900"
+            className="text-2xl font-bold text-gray-900 dark:text-gray-100"
           >
             {value}
           </motion.span>
         )}
-        {label && <span className="text-xs text-gray-500">{label}</span>}
+        {label && (
+          <span className="text-xs text-gray-500 dark:text-gray-400">
+            {label}
+          </span>
+        )}
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

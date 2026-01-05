@@ -1,15 +1,13 @@
 import { Flame } from "lucide-react";
 import { motion } from "framer-motion";
+import { memo } from "react";
 
 interface StreakBadgeProps {
   currentStreak: number;
   locale: "pt-BR" | "en-US";
 }
 
-export default function StreakBadge({
-  currentStreak,
-  locale,
-}: StreakBadgeProps) {
+function StreakBadge({ currentStreak, locale }: StreakBadgeProps) {
   const translations = {
     "pt-BR": {
       streak: "Sequência",
@@ -32,35 +30,41 @@ export default function StreakBadge({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="flex items-center gap-4 rounded-2xl border border-gray-200 bg-gradient-to-br from-orange-50 to-red-50 p-6 shadow-sm"
+      className="flex items-center gap-4 rounded-2xl border border-gray-200 bg-gradient-to-br from-orange-50 to-red-50 p-6 shadow-sm dark:border-gray-700 dark:from-orange-950/30 dark:to-red-950/30"
     >
       {/* Fire Icon */}
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-lg">
+      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-lg dark:bg-gray-800">
         <Flame
           className={`h-8 w-8 ${
-            currentStreak > 0 ? "text-orange-500" : "text-gray-400"
+            currentStreak > 0
+              ? "text-orange-500 dark:text-orange-400"
+              : "text-gray-400 dark:text-gray-600"
           }`}
         />
       </div>
 
       {/* Streak Info */}
       <div className="flex-1">
-        <p className="text-sm font-medium text-gray-600">{t.streak}</p>
+        <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+          {t.streak}
+        </p>
         <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-bold text-gray-900">
+          <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
             {currentStreak}
           </span>
-          <span className="text-sm text-gray-600">{t.days}</span>
+          <span className="text-sm text-gray-600 dark:text-gray-400">
+            {t.days}
+          </span>
         </div>
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
           {currentStreak > 0 ? t.keepGoing : t.startToday}
         </p>
       </div>
 
       {/* Visual Indicator */}
       {currentStreak >= 7 && (
-        <div className="flex items-center justify-center rounded-lg bg-orange-100 px-3 py-1.5">
-          <span className="text-xs font-semibold text-orange-700">
+        <div className="flex items-center justify-center rounded-lg bg-orange-100 px-3 py-1.5 dark:bg-orange-900/30">
+          <span className="text-xs font-semibold text-orange-700 dark:text-orange-400">
             🔥 {currentStreak >= 30 ? "🏆" : ""}
           </span>
         </div>
@@ -68,3 +72,5 @@ export default function StreakBadge({
     </motion.div>
   );
 }
+
+export default memo(StreakBadge);

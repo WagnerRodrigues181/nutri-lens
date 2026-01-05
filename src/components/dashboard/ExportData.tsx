@@ -127,15 +127,19 @@ export default function ExportData() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+      className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
     >
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">{t.title}</h3>
-          <p className="mt-1 text-sm text-gray-600">{t.subtitle}</p>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            {t.title}
+          </h3>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            {t.subtitle}
+          </p>
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
-          <Download className="h-6 w-6 text-blue-600" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/30">
+          <Download className="h-6 w-6 text-blue-600 dark:text-blue-500" />
         </div>
       </div>
 
@@ -146,19 +150,23 @@ export default function ExportData() {
           whileTap={{ scale: 0.98 }}
           onClick={handleExportCSV}
           disabled={loadingCSV}
-          className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-4 transition-all hover:border-green-300 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 bg-gradient-to-br from-green-50 to-emerald-50 p-4 transition-all hover:border-green-300 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:from-green-950/30 dark:to-emerald-950/30 dark:hover:border-green-600"
           aria-label={t.exportCSV}
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white dark:bg-gray-800">
             {loadingCSV ? (
-              <Loader2 className="h-6 w-6 animate-spin text-green-600" />
+              <Loader2 className="h-6 w-6 animate-spin text-green-600 dark:text-green-500" />
             ) : (
-              <FileText className="h-6 w-6 text-green-600" />
+              <FileText className="h-6 w-6 text-green-600 dark:text-green-500" />
             )}
           </div>
           <div className="text-center">
-            <p className="font-semibold text-gray-900">{t.exportCSV}</p>
-            <p className="mt-1 text-xs text-gray-600">{t.exportCSVDesc}</p>
+            <p className="font-semibold text-gray-900 dark:text-gray-100">
+              {t.exportCSV}
+            </p>
+            <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+              {t.exportCSVDesc}
+            </p>
           </div>
         </motion.button>
 
@@ -168,19 +176,23 @@ export default function ExportData() {
           whileTap={{ scale: 0.98 }}
           onClick={handleExportJSON}
           disabled={loadingJSON}
-          className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-4 transition-all hover:border-blue-300 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-4 transition-all hover:border-blue-300 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:from-blue-950/30 dark:to-indigo-950/30 dark:hover:border-blue-600"
           aria-label={t.exportJSON}
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white dark:bg-gray-800">
             {loadingJSON ? (
-              <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+              <Loader2 className="h-6 w-6 animate-spin text-blue-600 dark:text-blue-500" />
             ) : (
-              <FileJson className="h-6 w-6 text-blue-600" />
+              <FileJson className="h-6 w-6 text-blue-600 dark:text-blue-500" />
             )}
           </div>
           <div className="text-center">
-            <p className="font-semibold text-gray-900">{t.exportJSON}</p>
-            <p className="mt-1 text-xs text-gray-600">{t.exportJSONDesc}</p>
+            <p className="font-semibold text-gray-900 dark:text-gray-100">
+              {t.exportJSON}
+            </p>
+            <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+              {t.exportJSONDesc}
+            </p>
           </div>
         </motion.button>
 
@@ -190,19 +202,23 @@ export default function ExportData() {
           whileTap={{ scale: 0.98 }}
           onClick={handleWeeklyReport}
           disabled={loadingReport}
-          className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-4 transition-all hover:border-purple-300 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 bg-gradient-to-br from-purple-50 to-pink-50 p-4 transition-all hover:border-purple-300 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:from-purple-950/30 dark:to-pink-950/30 dark:hover:border-purple-600"
           aria-label={t.weeklyReport}
         >
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white dark:bg-gray-800">
             {loadingReport ? (
-              <Loader2 className="h-6 w-6 animate-spin text-purple-600" />
+              <Loader2 className="h-6 w-6 animate-spin text-purple-600 dark:text-purple-500" />
             ) : (
-              <Calendar className="h-6 w-6 text-purple-600" />
+              <Calendar className="h-6 w-6 text-purple-600 dark:text-purple-500" />
             )}
           </div>
           <div className="text-center">
-            <p className="font-semibold text-gray-900">{t.weeklyReport}</p>
-            <p className="mt-1 text-xs text-gray-600">{t.weeklyReportDesc}</p>
+            <p className="font-semibold text-gray-900 dark:text-gray-100">
+              {t.weeklyReport}
+            </p>
+            <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+              {t.weeklyReportDesc}
+            </p>
           </div>
         </motion.button>
       </div>

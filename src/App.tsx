@@ -35,10 +35,10 @@ export default function App() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                 {locale === "pt-BR" ? "Dashboard" : "Dashboard"}
               </h2>
-              <p className="mt-1 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
                 {locale === "pt-BR"
                   ? "Acompanhe seu progresso nutricional diário"
                   : "Track your daily nutritional progress"}

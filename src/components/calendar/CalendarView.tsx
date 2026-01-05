@@ -136,14 +136,14 @@ export default function CalendarView() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+      className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
       role="region"
       aria-label={`Calendar for ${monthNames[month]} ${year}`}
     >
       {/* Header */}
       <div className="mb-4 flex items-center justify-between">
         <h3
-          className="text-lg font-semibold capitalize text-gray-900"
+          className="text-lg font-semibold capitalize text-gray-900 dark:text-gray-100"
           id="calendar-title"
         >
           {monthNames[month]} {year}
@@ -155,14 +155,14 @@ export default function CalendarView() {
         >
           <button
             onClick={handlePreviousMonth}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-800"
             aria-label={t.previousMonth}
           >
             <ChevronLeft className="h-4 w-4" aria-hidden="true" />
           </button>
           <button
             onClick={handleNextMonth}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-800"
             aria-label={t.nextMonth}
           >
             <ChevronRight className="h-4 w-4" aria-hidden="true" />
@@ -180,7 +180,7 @@ export default function CalendarView() {
         {weekDays.map((day) => (
           <div
             key={day}
-            className="flex h-8 items-center justify-center text-xs font-semibold text-gray-600"
+            className="flex h-8 items-center justify-center text-xs font-semibold text-gray-600 dark:text-gray-400"
             role="columnheader"
             aria-label={day}
           >
@@ -201,14 +201,14 @@ export default function CalendarView() {
             <button
               key={day}
               onClick={() => handleDayClick(day)}
-              className={`flex h-10 items-center justify-center rounded-lg text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${
+              className={`flex h-10 items-center justify-center rounded-lg text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${
                 status === "today"
-                  ? "bg-green-500 text-white shadow-lg shadow-green-500/30"
+                  ? "bg-green-500 text-white shadow-lg shadow-green-500/30 dark:bg-green-600"
                   : status === "selected"
-                  ? "bg-green-100 text-green-700 ring-2 ring-green-500"
+                  ? "bg-green-100 text-green-700 ring-2 ring-green-500 dark:bg-green-900/30 dark:text-green-400"
                   : status === "has-data"
-                  ? "bg-blue-50 text-blue-700 hover:bg-blue-100"
-                  : "text-gray-700 hover:bg-gray-100"
+                  ? "bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50"
+                  : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
               }`}
               role="gridcell"
               aria-label={getDayAriaLabel(day)}
@@ -223,24 +223,36 @@ export default function CalendarView() {
 
       {/* Legend */}
       <div
-        className="mt-4 flex flex-wrap gap-3 border-t border-gray-200 pt-4"
+        className="mt-4 flex flex-wrap gap-3 border-t border-gray-200 pt-4 dark:border-gray-700"
         role="list"
         aria-label="Calendar legend"
       >
         <div className="flex items-center gap-2" role="listitem">
-          <div className="h-3 w-3 rounded bg-green-500" aria-hidden="true" />
-          <span className="text-xs text-gray-600">{t.today}</span>
+          <div
+            className="h-3 w-3 rounded bg-green-500 dark:bg-green-600"
+            aria-hidden="true"
+          />
+          <span className="text-xs text-gray-600 dark:text-gray-400">
+            {t.today}
+          </span>
         </div>
         <div className="flex items-center gap-2" role="listitem">
           <div
-            className="h-3 w-3 rounded bg-green-100 ring-2 ring-green-500"
+            className="h-3 w-3 rounded bg-green-100 ring-2 ring-green-500 dark:bg-green-900/30 dark:ring-green-400"
             aria-hidden="true"
           />
-          <span className="text-xs text-gray-600">{t.selected}</span>
+          <span className="text-xs text-gray-600 dark:text-gray-400">
+            {t.selected}
+          </span>
         </div>
         <div className="flex items-center gap-2" role="listitem">
-          <div className="h-3 w-3 rounded bg-blue-50" aria-hidden="true" />
-          <span className="text-xs text-gray-600">{t.hasData}</span>
+          <div
+            className="h-3 w-3 rounded bg-blue-50 dark:bg-blue-900/30"
+            aria-hidden="true"
+          />
+          <span className="text-xs text-gray-600 dark:text-gray-400">
+            {t.hasData}
+          </span>
         </div>
       </div>
     </motion.div>

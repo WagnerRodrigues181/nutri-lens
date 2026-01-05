@@ -51,6 +51,7 @@ export default function KeyboardShortcutsPopup({
           description: "Navegar em grids/calendários",
         },
       ] as ShortcutItem[],
+      footerTip: "Pressione Esc para fechar este painel",
     },
     "en-US": {
       title: "Keyboard Shortcuts",
@@ -82,6 +83,7 @@ export default function KeyboardShortcutsPopup({
           description: "Navigate grids/calendars",
         },
       ] as ShortcutItem[],
+      footerTip: "Press Esc to close this panel",
     },
   };
 
@@ -123,23 +125,23 @@ export default function KeyboardShortcutsPopup({
           aria-describedby="shortcuts-description"
         >
           {/* Card */}
-          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl">
+          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-800">
             {/* Header */}
-            <div className="flex items-start justify-between border-b border-gray-100 bg-gradient-to-r from-green-50 to-blue-50 p-4">
+            <div className="flex items-start justify-between border-b border-gray-100 bg-gradient-to-r from-green-50 to-blue-50 p-4 dark:border-gray-700 dark:from-green-950/30 dark:to-blue-950/30">
               <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500 shadow-lg shadow-green-500/30">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-green-500 shadow-lg shadow-green-500/30 dark:bg-green-600">
                   <Keyboard className="h-5 w-5 text-white" aria-hidden="true" />
                 </div>
                 <div>
                   <h2
                     id="shortcuts-title"
-                    className="text-lg font-bold text-gray-900"
+                    className="text-lg font-bold text-gray-900 dark:text-gray-100"
                   >
                     {t.title}
                   </h2>
                   <p
                     id="shortcuts-description"
-                    className="text-xs text-gray-600"
+                    className="text-xs text-gray-600 dark:text-gray-400"
                   >
                     {t.subtitle}
                   </p>
@@ -150,7 +152,7 @@ export default function KeyboardShortcutsPopup({
               <button
                 ref={closeButtonRef}
                 onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-white hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-white hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                 aria-label={t.closeButton}
               >
                 <X className="h-4 w-4" aria-hidden="true" />
@@ -166,16 +168,16 @@ export default function KeyboardShortcutsPopup({
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.2, delay: index * 0.05 }}
-                    className="flex items-start gap-3 rounded-lg bg-gray-50 p-3 transition-colors hover:bg-gray-100"
+                    className="flex items-start gap-3 rounded-lg bg-gray-50 p-3 transition-colors hover:bg-gray-100 dark:bg-gray-700/50 dark:hover:bg-gray-700"
                     role="listitem"
                   >
                     {/* Key Badge */}
-                    <kbd className="inline-flex min-w-fit shrink-0 items-center rounded-md border border-gray-300 bg-white px-2 py-1 font-mono text-xs font-semibold text-gray-700 shadow-sm">
+                    <kbd className="inline-flex min-w-fit shrink-0 items-center rounded-md border border-gray-300 bg-white px-2 py-1 font-mono text-xs font-semibold text-gray-700 shadow-sm dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300">
                       {shortcut.keys}
                     </kbd>
 
                     {/* Description */}
-                    <span className="text-sm text-gray-700">
+                    <span className="text-sm text-gray-700 dark:text-gray-300">
                       {shortcut.description}
                     </span>
                   </motion.li>
@@ -184,12 +186,9 @@ export default function KeyboardShortcutsPopup({
             </div>
 
             {/* Footer Tip */}
-            <div className="border-t border-gray-100 bg-blue-50 p-3">
-              <p className="text-center text-xs text-blue-700">
-                💡{" "}
-                {locale === "pt-BR"
-                  ? "Pressione Esc para fechar este painel"
-                  : "Press Esc to close this panel"}
+            <div className="border-t border-gray-100 bg-blue-50 p-3 dark:border-gray-700 dark:bg-blue-950/30">
+              <p className="text-center text-xs text-blue-700 dark:text-blue-400">
+                💡 {t.footerTip}
               </p>
             </div>
           </div>

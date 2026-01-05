@@ -145,22 +145,25 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
+      <div className="relative z-10 w-full max-w-lg rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-gray-700 dark:bg-gray-800">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
-          <h2 id="meal-form-title" className="text-2xl font-bold text-gray-900">
+          <h2
+            id="meal-form-title"
+            className="text-2xl font-bold text-gray-900 dark:text-gray-100"
+          >
             {meal ? t.editMeal : t.addMeal}
           </h2>
           <button
             ref={closeButtonRef}
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 dark:focus:ring-offset-gray-800"
             aria-label={t.closeDialog}
           >
             <X className="h-5 w-5" />
@@ -173,7 +176,7 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
           <div>
             <label
               htmlFor="meal-name"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               {t.mealName}
             </label>
@@ -185,8 +188,10 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
               onChange={(e) => handleChange("name", e.target.value)}
               placeholder={t.namePlaceholder}
               className={`w-full rounded-lg border ${
-                errors.name ? "border-red-500" : "border-gray-300"
-              } px-4 py-2.5 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20`}
+                errors.name
+                  ? "border-red-500 dark:border-red-500"
+                  : "border-gray-300 dark:border-gray-600"
+              } bg-white px-4 py-2.5 text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400 dark:focus:border-green-500`}
               aria-invalid={!!errors.name}
               aria-describedby={errors.name ? "name-error" : undefined}
               required
@@ -194,7 +199,7 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
             {errors.name && (
               <p
                 id="name-error"
-                className="mt-1 text-sm text-red-600"
+                className="mt-1 text-sm text-red-600 dark:text-red-400"
                 role="alert"
               >
                 {errors.name}
@@ -206,7 +211,7 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
           <div>
             <label
               htmlFor="meal-category"
-              className="mb-2 block text-sm font-medium text-gray-700"
+              className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               {t.category}
             </label>
@@ -216,7 +221,7 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
               onChange={(e) =>
                 handleChange("category", e.target.value as MealCategory)
               }
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20"
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-green-500"
             >
               {categories.map((cat) => (
                 <option key={cat.value} value={cat.value}>
@@ -232,9 +237,12 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
             <div>
               <label
                 htmlFor="calories"
-                className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700"
+                className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300"
               >
-                <Flame className="h-4 w-4 text-green-600" aria-hidden="true" />
+                <Flame
+                  className="h-4 w-4 text-green-600 dark:text-green-500"
+                  aria-hidden="true"
+                />
                 {t.calories}
               </label>
               <input
@@ -247,8 +255,10 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
                   handleChange("calories", parseFloat(e.target.value) || 0)
                 }
                 className={`w-full rounded-lg border ${
-                  errors.calories ? "border-red-500" : "border-gray-300"
-                } px-4 py-2.5 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20`}
+                  errors.calories
+                    ? "border-red-500 dark:border-red-500"
+                    : "border-gray-300 dark:border-gray-600"
+                } bg-white px-4 py-2.5 text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-green-500`}
                 aria-invalid={!!errors.calories}
                 aria-describedby={
                   errors.calories ? "calories-error" : undefined
@@ -258,7 +268,7 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
               {errors.calories && (
                 <p
                   id="calories-error"
-                  className="mt-1 text-sm text-red-600"
+                  className="mt-1 text-sm text-red-600 dark:text-red-400"
                   role="alert"
                 >
                   {errors.calories}
@@ -270,9 +280,12 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
             <div>
               <label
                 htmlFor="protein"
-                className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700"
+                className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300"
               >
-                <Beef className="h-4 w-4 text-red-600" aria-hidden="true" />
+                <Beef
+                  className="h-4 w-4 text-red-600 dark:text-red-500"
+                  aria-hidden="true"
+                />
                 {t.protein}
               </label>
               <input
@@ -285,8 +298,10 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
                   handleChange("protein", parseFloat(e.target.value) || 0)
                 }
                 className={`w-full rounded-lg border ${
-                  errors.protein ? "border-red-500" : "border-gray-300"
-                } px-4 py-2.5 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20`}
+                  errors.protein
+                    ? "border-red-500 dark:border-red-500"
+                    : "border-gray-300 dark:border-gray-600"
+                } bg-white px-4 py-2.5 text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-green-500`}
                 aria-invalid={!!errors.protein}
                 aria-describedby={errors.protein ? "protein-error" : undefined}
                 required
@@ -294,7 +309,7 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
               {errors.protein && (
                 <p
                   id="protein-error"
-                  className="mt-1 text-sm text-red-600"
+                  className="mt-1 text-sm text-red-600 dark:text-red-400"
                   role="alert"
                 >
                   {errors.protein}
@@ -306,9 +321,12 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
             <div>
               <label
                 htmlFor="carbs"
-                className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700"
+                className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300"
               >
-                <Wheat className="h-4 w-4 text-amber-600" aria-hidden="true" />
+                <Wheat
+                  className="h-4 w-4 text-amber-600 dark:text-amber-500"
+                  aria-hidden="true"
+                />
                 {t.carbs}
               </label>
               <input
@@ -321,8 +339,10 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
                   handleChange("carbs", parseFloat(e.target.value) || 0)
                 }
                 className={`w-full rounded-lg border ${
-                  errors.carbs ? "border-red-500" : "border-gray-300"
-                } px-4 py-2.5 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20`}
+                  errors.carbs
+                    ? "border-red-500 dark:border-red-500"
+                    : "border-gray-300 dark:border-gray-600"
+                } bg-white px-4 py-2.5 text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-green-500`}
                 aria-invalid={!!errors.carbs}
                 aria-describedby={errors.carbs ? "carbs-error" : undefined}
                 required
@@ -330,7 +350,7 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
               {errors.carbs && (
                 <p
                   id="carbs-error"
-                  className="mt-1 text-sm text-red-600"
+                  className="mt-1 text-sm text-red-600 dark:text-red-400"
                   role="alert"
                 >
                   {errors.carbs}
@@ -342,10 +362,10 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
             <div>
               <label
                 htmlFor="fat"
-                className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700"
+                className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 <Droplet
-                  className="h-4 w-4 text-indigo-600"
+                  className="h-4 w-4 text-indigo-600 dark:text-indigo-500"
                   aria-hidden="true"
                 />
                 {t.fat}
@@ -360,8 +380,10 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
                   handleChange("fat", parseFloat(e.target.value) || 0)
                 }
                 className={`w-full rounded-lg border ${
-                  errors.fat ? "border-red-500" : "border-gray-300"
-                } px-4 py-2.5 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20`}
+                  errors.fat
+                    ? "border-red-500 dark:border-red-500"
+                    : "border-gray-300 dark:border-gray-600"
+                } bg-white px-4 py-2.5 text-gray-900 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:bg-gray-700 dark:text-gray-100 dark:focus:border-green-500`}
                 aria-invalid={!!errors.fat}
                 aria-describedby={errors.fat ? "fat-error" : undefined}
                 required
@@ -369,7 +391,7 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
               {errors.fat && (
                 <p
                   id="fat-error"
-                  className="mt-1 text-sm text-red-600"
+                  className="mt-1 text-sm text-red-600 dark:text-red-400"
                   role="alert"
                 >
                   {errors.fat}
@@ -383,13 +405,13 @@ export default function MealForm({ meal, onClose }: MealFormProps) {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:focus:ring-offset-gray-800"
             >
               {t.cancel}
             </button>
             <button
               type="submit"
-              className="flex-1 rounded-lg bg-green-500 px-4 py-2.5 font-medium text-white transition-all hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/30 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+              className="flex-1 rounded-lg bg-green-500 px-4 py-2.5 font-medium text-white transition-all hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/30 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-offset-gray-800"
             >
               {t.save}
             </button>

@@ -2,16 +2,20 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { DailyGoals, UserProfile, Locale } from "@/types";
 
+export type Theme = "light" | "dark" | "system";
+
 interface SettingsState {
   // Data
   goals: DailyGoals;
   profile: UserProfile;
   locale: Locale;
+  theme: Theme;
 
   // Actions
   updateGoals: (goals: Partial<DailyGoals>) => void;
   updateProfile: (profile: Partial<UserProfile>) => void;
   setLocale: (locale: Locale) => void;
+  setTheme: (theme: Theme) => void;
   resetGoals: () => void;
 }
 
@@ -39,6 +43,7 @@ export const useSettingsStore = create<SettingsState>()(
       goals: defaultGoals,
       profile: defaultProfile,
       locale: "pt-BR",
+      theme: "light",
 
       // Actions
       updateGoals: (newGoals) => {
@@ -55,6 +60,10 @@ export const useSettingsStore = create<SettingsState>()(
 
       setLocale: (locale) => {
         set({ locale });
+      },
+
+      setTheme: (theme) => {
+        set({ theme });
       },
 
       resetGoals: () => {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import {
   Star,
   Plus,
@@ -10,11 +10,11 @@ import {
   Droplet,
   Heart,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { useNutritionStore } from "@/store/useNutritionStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { formatMealCategory } from "@/utils/formatters";
 import type { MealTemplate, MealCategory } from "@/types";
-import { motion } from "framer-motion";
 
 interface TemplateFormData {
   name: string;
@@ -26,7 +26,7 @@ interface TemplateFormData {
   isFavorite: boolean;
 }
 
-export default function MealTemplates() {
+function MealTemplates() {
   const {
     templates,
     addTemplate,
@@ -54,37 +54,17 @@ export default function MealTemplates() {
       title: "Refeições Favoritas",
       subtitle: "Salve suas refeições frequentes para adicionar rapidamente",
       addTemplate: "Novo Template",
-      editTemplate: "Editar Template",
-      save: "Salvar",
-      cancel: "Cancelar",
-      addToDay: "Adicionar",
-      noTemplates: "Nenhum template salvo ainda",
-      name: "Nome",
-      category: "Categoria",
-      breakfast: "Café da Manhã",
-      lunch: "Almoço",
-      dinner: "Jantar",
-      snack: "Lanche",
       favorite: "Favorito",
-      namePlaceholder: "Ex: Frango com batata doce",
+      noTemplates: "Nenhum template salvo ainda",
+      addToDay: "Adicionar",
     },
     "en-US": {
       title: "Favorite Meals",
       subtitle: "Save your frequent meals to add them quickly",
       addTemplate: "New Template",
-      editTemplate: "Edit Template",
-      save: "Save",
-      cancel: "Cancel",
-      addToDay: "Add",
-      noTemplates: "No templates saved yet",
-      name: "Name",
-      category: "Category",
-      breakfast: "Breakfast",
-      lunch: "Lunch",
-      dinner: "Dinner",
-      snack: "Snack",
       favorite: "Favorite",
-      namePlaceholder: "Ex: Chicken with sweet potato",
+      noTemplates: "No templates saved yet",
+      addToDay: "Add",
     },
   };
   const t = translations[locale];
@@ -159,28 +139,41 @@ export default function MealTemplates() {
   const regularTemplates = templates.filter((t) => !t.isFavorite);
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+    >
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">{t.title}</h3>
-            <p className="mt-1 text-sm text-gray-600">{t.subtitle}</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              {t.title}
+            </h3>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+              {t.subtitle}
+            </p>
           </div>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={handleOpenForm}
-            className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-green-600"
+            className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
           >
             <Plus className="h-4 w-4" />
             {t.addTemplate}
-          </button>
+          </motion.button>
         </div>
       </div>
       {/* Templates List */}
       {templates.length === 0 ? (
-        <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center">
-          <Heart className="mx-auto mb-3 h-12 w-12 text-gray-400" />
-          <p className="text-sm text-gray-600">{t.noTemplates}</p>
+        <div className="rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center dark:border-gray-700 dark:bg-gray-800/50">
+          <Heart className="mx-auto mb-3 h-12 w-12 text-gray-400 dark:text-gray-600" />
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {t.noTemplates}
+          </p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -188,8 +181,8 @@ export default function MealTemplates() {
           {favoriteTemplates.length > 0 && (
             <div>
               <div className="mb-2 flex items-center gap-2">
-                <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
-                <span className="text-sm font-semibold text-gray-700">
+                <Star className="h-4 w-4 fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400" />
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                   {t.favorite}
                 </span>
               </div>
@@ -239,7 +232,7 @@ export default function MealTemplates() {
           locale={locale}
         />
       )}
-    </div>
+    </motion.div>
   );
 }
 
@@ -268,7 +261,7 @@ function TemplateCard({
       exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.2 }}
-      className="group relative rounded-lg border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 transition-all hover:shadow-md"
+      className="group relative rounded-lg border border-gray-200 bg-gradient-to-br from-gray-50 to-white p-4 transition-all hover:shadow-md dark:border-gray-700 dark:from-gray-700/50 dark:to-gray-800/50"
     >
       {template.isFavorite && (
         <motion.div
@@ -277,60 +270,68 @@ function TemplateCard({
           transition={{ type: "spring", duration: 0.5 }}
           className="absolute right-2 top-2"
         >
-          <Star className="h-4 w-4 fill-amber-500 text-amber-500" />
+          <Star className="h-4 w-4 fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400" />
         </motion.div>
       )}
       <div className="mb-3">
-        <h4 className="font-semibold text-gray-900">{template.name}</h4>
-        <p className="text-xs text-gray-600">
+        <h4 className="font-semibold text-gray-900 dark:text-gray-100">
+          {template.name}
+        </h4>
+        <p className="text-xs text-gray-600 dark:text-gray-400">
           {formatMealCategory(template.category, locale)}
         </p>
       </div>
       <div className="mb-3 grid grid-cols-4 gap-2">
-        <div className="flex flex-col items-center rounded bg-white p-1.5">
-          <Flame className="mb-0.5 h-3 w-3 text-green-600" />
-          <span className="text-[10px] font-medium">
+        <div className="flex flex-col items-center rounded bg-white p-1.5 dark:bg-gray-700">
+          <Flame className="mb-0.5 h-3 w-3 text-green-600 dark:text-green-500" />
+          <span className="text-[10px] font-medium text-gray-900 dark:text-gray-100">
             {Math.round(template.calories)}
           </span>
         </div>
-        <div className="flex flex-col items-center rounded bg-white p-1.5">
-          <Beef className="mb-0.5 h-3 w-3 text-red-600" />
-          <span className="text-[10px] font-medium">
+        <div className="flex flex-col items-center rounded bg-white p-1.5 dark:bg-gray-700">
+          <Beef className="mb-0.5 h-3 w-3 text-red-600 dark:text-red-500" />
+          <span className="text-[10px] font-medium text-gray-900 dark:text-gray-100">
             {template.protein.toFixed(1)}
           </span>
         </div>
-        <div className="flex flex-col items-center rounded bg-white p-1.5">
-          <Wheat className="mb-0.5 h-3 w-3 text-amber-600" />
-          <span className="text-[10px] font-medium">
+        <div className="flex flex-col items-center rounded bg-white p-1.5 dark:bg-gray-700">
+          <Wheat className="mb-0.5 h-3 w-3 text-amber-600 dark:text-amber-500" />
+          <span className="text-[10px] font-medium text-gray-900 dark:text-gray-100">
             {template.carbs.toFixed(1)}
           </span>
         </div>
-        <div className="flex flex-col items-center rounded bg-white p-1.5">
-          <Droplet className="mb-0.5 h-3 w-3 text-indigo-600" />
-          <span className="text-[10px] font-medium">
+        <div className="flex flex-col items-center rounded bg-white p-1.5 dark:bg-gray-700">
+          <Droplet className="mb-0.5 h-3 w-3 text-indigo-600 dark:text-indigo-500" />
+          <span className="text-[10px] font-medium text-gray-900 dark:text-gray-100">
             {template.fat.toFixed(1)}
           </span>
         </div>
       </div>
       <div className="flex gap-2">
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => onAddToDay(template.id)}
-          className="flex-1 rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600"
+          className="flex-1 rounded-lg bg-green-500 px-3 py-2 text-xs font-medium text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
         >
           {addLabel}
-        </button>
-        <button
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => onEdit(template)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-100"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
         >
-          <Edit2 className="h-3.5 w-3.5" />
-        </button>
-        <button
+          <Edit2 className="h-3.5 w-3.5 text-gray-600 dark:text-gray-300" />
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => onDelete(template.id)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 hover:bg-red-50"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-300 hover:bg-red-50 dark:border-gray-600 dark:hover:bg-red-950/30"
         >
-          <Trash2 className="h-3.5 w-3.5" />
-        </button>
+          <Trash2 className="h-3.5 w-3.5 text-gray-600 dark:text-gray-300" />
+        </motion.button>
       </div>
     </motion.div>
   );
@@ -398,11 +399,15 @@ function TemplateFormModal({
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-6">
-        <h3 className="mb-4 text-xl font-bold">{isEditing ? t.edit : t.add}</h3>
+      <div className="relative z-10 w-full max-w-lg rounded-2xl bg-white p-6 dark:bg-gray-800">
+        <h3 className="mb-4 text-xl font-bold text-gray-900 dark:text-gray-100">
+          {isEditing ? t.edit : t.add}
+        </h3>
         <div className="space-y-4">
           <div>
-            <label className="mb-2 block text-sm font-medium">{t.name}</label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              {t.name}
+            </label>
             <input
               type="text"
               value={formData.name}
@@ -410,7 +415,7 @@ function TemplateFormModal({
                 setFormData({ ...formData, name: e.target.value })
               }
               placeholder={t.placeholder}
-              className="w-full rounded-lg border border-gray-300 px-4 py-2.5"
+              className="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
             />
           </div>
           <div className="grid grid-cols-4 gap-2">
@@ -425,8 +430,8 @@ function TemplateFormModal({
                 }
                 className={`rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
                   formData.category === cat.value
-                    ? "border-green-500 bg-green-50 text-green-700"
-                    : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                    ? "border-green-500 bg-green-50 text-green-700 dark:bg-green-950/30 dark:text-green-400"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
                 }`}
               >
                 {cat.label}
@@ -435,7 +440,9 @@ function TemplateFormModal({
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-2 block text-sm">Calorias</label>
+              <label className="mb-2 block text-sm text-gray-700 dark:text-gray-300">
+                Calorias
+              </label>
               <input
                 type="number"
                 value={formData.calories}
@@ -445,11 +452,13 @@ function TemplateFormModal({
                     calories: parseFloat(e.target.value) || 0,
                   })
                 }
-                className="w-full rounded-lg border px-4 py-2.5"
+                className="w-full rounded-lg border px-4 py-2.5 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
               />
             </div>
             <div>
-              <label className="mb-2 block text-sm">Proteína (g)</label>
+              <label className="mb-2 block text-sm text-gray-700 dark:text-gray-300">
+                Proteína (g)
+              </label>
               <input
                 type="number"
                 step="0.1"
@@ -460,11 +469,13 @@ function TemplateFormModal({
                     protein: parseFloat(e.target.value) || 0,
                   })
                 }
-                className="w-full rounded-lg border px-4 py-2.5"
+                className="w-full rounded-lg border px-4 py-2.5 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
               />
             </div>
             <div>
-              <label className="mb-2 block text-sm">Carboidratos (g)</label>
+              <label className="mb-2 block text-sm text-gray-700 dark:text-gray-300">
+                Carboidratos (g)
+              </label>
               <input
                 type="number"
                 step="0.1"
@@ -475,11 +486,13 @@ function TemplateFormModal({
                     carbs: parseFloat(e.target.value) || 0,
                   })
                 }
-                className="w-full rounded-lg border px-4 py-2.5"
+                className="w-full rounded-lg border px-4 py-2.5 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
               />
             </div>
             <div>
-              <label className="mb-2 block text-sm">Gordura (g)</label>
+              <label className="mb-2 block text-sm text-gray-700 dark:text-gray-300">
+                Gordura (g)
+              </label>
               <input
                 type="number"
                 step="0.1"
@@ -490,7 +503,7 @@ function TemplateFormModal({
                     fat: parseFloat(e.target.value) || 0,
                   })
                 }
-                className="w-full rounded-lg border px-4 py-2.5"
+                className="w-full rounded-lg border px-4 py-2.5 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100"
               />
             </div>
           </div>
@@ -504,7 +517,10 @@ function TemplateFormModal({
               }
               className="h-4 w-4"
             />
-            <label htmlFor="fav" className="text-sm font-medium">
+            <label
+              htmlFor="fav"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               {t.favorite}
             </label>
           </div>
@@ -512,13 +528,13 @@ function TemplateFormModal({
         <div className="mt-6 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium"
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
           >
             {t.cancel}
           </button>
           <button
             onClick={onSubmit}
-            className="flex-1 rounded-lg bg-green-500 px-4 py-2.5 font-medium text-white"
+            className="flex-1 rounded-lg bg-green-500 px-4 py-2.5 font-medium text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
           >
             {t.save}
           </button>
@@ -527,3 +543,5 @@ function TemplateFormModal({
     </div>
   );
 }
+
+export default memo(MealTemplates);
