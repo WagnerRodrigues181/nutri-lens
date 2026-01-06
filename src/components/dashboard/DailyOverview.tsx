@@ -1,8 +1,8 @@
-import { Flame, Beef, Wheat, Droplet, Droplets } from "lucide-react";
+import { Flame, Beef, Wheat, Droplet } from "lucide-react";
 import { useNutritionStore } from "@/store/useNutritionStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { calculateGoalsProgress } from "@/utils/calculations";
-import { formatCalories, formatMacro, formatWater } from "@/utils/formatters";
+import { formatCalories, formatMacro } from "@/utils/formatters";
 import { calculateCurrentStreak } from "@/services/streak";
 import MetricCard from "./MetricCard";
 import StreakBadge from "./StreakBadge";
@@ -40,12 +40,12 @@ export default function DailyOverview() {
   const t = translations[locale];
 
   return (
-    <div className="space-y-6">
-      {/* Streak Badge */}
+    <div className="space-y-8">
+      {/* Streak Badge - Separated with more space */}
       <StreakBadge currentStreak={currentStreak} locale={locale} />
 
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      {/* Metrics Grid - Better spacing */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-5">
         <MetricCard
           icon={Flame}
           label={t.calories}
