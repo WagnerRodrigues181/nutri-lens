@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Layout from "./components/common/Layout";
 import DailyOverview from "./components/dashboard/DailyOverview";
-import StreakBadge from "./components/dashboard/StreakBadge";
 import MacrosRing from "./components/dashboard/MacrosRing";
 import WeeklySummary from "./components/dashboard/WeeklySummary";
 import WeeklyBarChart from "./components/charts/WeeklyBarChart";
@@ -15,19 +14,22 @@ import MealTemplates from "./components/meals/MealTemplates";
 import GoalsModal from "./components/goals/GoalsModal";
 import InsightsList from "./components/insights/InsightsList";
 import AchievementsList from "./components/insights/AchievementsList";
-import ExportData from "./components/dashboard/ExportData";
+import ImportExportData from "./components/dashboard/ImportExportData";
 import StatisticsPanel from "./components/dashboard/StatisticsPanel";
 import { ToastContainer } from "./components/common/Toast";
 
 import { useSettingsStore } from "./store/useSettingsStore";
+import { useNutritionStore } from "./store/useNutritionStore";
 import { useToast } from "./hooks/useToast";
+import { calculateCurrentStreak } from "./services/streak";
 
 export default function App() {
-  const { locale } = useSettingsStore();
+  const { locale, goals } = useSettingsStore();
+  const { history } = useNutritionStore();
   const { toasts, removeToast } = useToast();
   const [isGoalsModalOpen, setIsGoalsModalOpen] = useState(false);
 
-  const currentStreak = 0;
+  const currentStreak = calculateCurrentStreak(history, goals);
 
   return (
     <>
@@ -46,7 +48,7 @@ export default function App() {
             </div>
           </div>
 
-          <StreakBadge currentStreak={currentStreak} locale={locale} />
+          {/* StreakBadge is now inside DailyOverview */}
           <InsightsList />
           <AchievementsList currentStreak={currentStreak} />
           <DateNavigator />
@@ -63,7 +65,7 @@ export default function App() {
 
           <StatisticsPanel />
 
-          <ExportData />
+          <ImportExportData />
         </div>
       </Layout>
 
@@ -72,7 +74,6 @@ export default function App() {
         onClose={() => setIsGoalsModalOpen(false)}
       />
 
-      {/* Toast Notifications */}
       <ToastContainer toasts={toasts} onClose={removeToast} />
     </>
   );

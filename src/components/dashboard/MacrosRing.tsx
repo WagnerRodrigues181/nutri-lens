@@ -70,10 +70,7 @@ function MacrosRing() {
             value={Math.round(totalMacros.calories).toString()}
             delay={0}
           />
-          <p className="mt-3 text-xs text-gray-600 dark:text-gray-400">
-            {t.calories}
-          </p>
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          <p className="mt-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
             de {goals.calories}
           </p>
         </div>
@@ -88,10 +85,7 @@ function MacrosRing() {
             value={Math.round(totalMacros.protein).toString()}
             delay={0.1}
           />
-          <p className="mt-3 text-xs text-gray-600 dark:text-gray-400">
-            {t.protein}
-          </p>
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          <p className="mt-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
             de {goals.protein}g
           </p>
         </div>
@@ -106,10 +100,7 @@ function MacrosRing() {
             value={Math.round(totalMacros.carbs).toString()}
             delay={0.2}
           />
-          <p className="mt-3 text-xs text-gray-600 dark:text-gray-400">
-            {t.carbs}
-          </p>
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          <p className="mt-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
             de {goals.carbs}g
           </p>
         </div>
@@ -124,10 +115,7 @@ function MacrosRing() {
             value={Math.round(totalMacros.fat).toString()}
             delay={0.3}
           />
-          <p className="mt-3 text-xs text-gray-600 dark:text-gray-400">
-            {t.fat}
-          </p>
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          <p className="mt-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
             de {goals.fat}g
           </p>
         </div>

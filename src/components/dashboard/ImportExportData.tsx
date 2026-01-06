@@ -1,5 +1,12 @@
-import { useState } from "react";
-import { Download, FileText, FileJson, Calendar, Loader2 } from "lucide-react";
+import { useState, useRef } from "react";
+import {
+  Download,
+  Upload,
+  FileText,
+  FileJson,
+  Calendar,
+  Loader2,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { useNutritionStore } from "@/store/useNutritionStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
@@ -9,43 +16,57 @@ import {
   exportToJSON,
   exportWeeklyReport,
 } from "@/services/export";
+import { importFromJSON, importFromCSV } from "@/services/import";
 import { getWeekRange } from "@/utils/dateHelpers";
 
-export default function ExportData() {
+export default function ImportExportData() {
   const { history, currentDate } = useNutritionStore();
-  const { goals, locale } = useSettingsStore();
+  const { goals, locale, updateGoals } = useSettingsStore();
   const { success, error } = useToast();
 
   const [loadingCSV, setLoadingCSV] = useState(false);
   const [loadingJSON, setLoadingJSON] = useState(false);
   const [loadingReport, setLoadingReport] = useState(false);
+  const [loadingImport, setLoadingImport] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const translations = {
     "pt-BR": {
-      title: "Exportar Dados",
-      subtitle: "Baixe seus dados para backup ou análise",
+      title: "Importar & Exportar Dados",
+      subtitle: "Faça backup ou restaure seus dados",
+      importData: "Importar Dados",
+      importDataDesc: "Restaurar de backup (JSON/CSV)",
       exportCSV: "Exportar CSV",
-      exportCSVDesc: "Todos os dados em formato planilha",
+      exportCSVDesc: "Todos os dados em planilha",
       exportJSON: "Exportar JSON",
-      exportJSONDesc: "Backup completo dos dados",
+      exportJSONDesc: "Backup completo",
       weeklyReport: "Relatório Semanal",
-      weeklyReportDesc: "Resumo da semana atual",
-      successCSV: "Arquivo CSV exportado com sucesso!",
-      successJSON: "Arquivo JSON exportado com sucesso!",
-      successReport: "Relatório semanal gerado com sucesso!",
+      weeklyReportDesc: "Resumo da semana",
+      successCSV: "CSV exportado com sucesso!",
+      successJSON: "JSON exportado com sucesso!",
+      successReport: "Relatório gerado!",
+      successImport: "Dados importados com sucesso!",
+      importWithGoals: "Dados e metas importados!",
+      confirmImport: "Importar dados? Isso substituirá os dados atuais.",
     },
     "en-US": {
-      title: "Export Data",
-      subtitle: "Download your data for backup or analysis",
+      title: "Import & Export Data",
+      subtitle: "Backup or restore your data",
+      importData: "Import Data",
+      importDataDesc: "Restore from backup (JSON/CSV)",
       exportCSV: "Export CSV",
-      exportCSVDesc: "All data in spreadsheet format",
+      exportCSVDesc: "All data in spreadsheet",
       exportJSON: "Export JSON",
-      exportJSONDesc: "Complete data backup",
+      exportJSONDesc: "Complete backup",
       weeklyReport: "Weekly Report",
       weeklyReportDesc: "Current week summary",
-      successCSV: "CSV file exported successfully!",
-      successJSON: "JSON file exported successfully!",
-      successReport: "Weekly report generated successfully!",
+      successCSV: "CSV exported successfully!",
+      successJSON: "JSON exported successfully!",
+      successReport: "Report generated!",
+      successImport: "Data imported successfully!",
+      importWithGoals: "Data and goals imported!",
+      confirmImport: "Import data? This will replace current data.",
     },
   };
 
@@ -54,9 +75,7 @@ export default function ExportData() {
   const handleExportCSV = async () => {
     setLoadingCSV(true);
     try {
-      // Simulate small delay for UX
       await new Promise((resolve) => setTimeout(resolve, 500));
-
       const result = exportToCSV(history, locale);
 
       if (result.success) {
@@ -65,11 +84,7 @@ export default function ExportData() {
         error(result.error || "Export failed");
       }
     } catch (err) {
-      error(
-        locale === "pt-BR"
-          ? "Erro inesperado ao exportar CSV"
-          : "Unexpected error exporting CSV"
-      );
+      error("Unexpected error");
     } finally {
       setLoadingCSV(false);
     }
@@ -79,7 +94,6 @@ export default function ExportData() {
     setLoadingJSON(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-
       const result = exportToJSON(history, goals, locale);
 
       if (result.success) {
@@ -88,11 +102,7 @@ export default function ExportData() {
         error(result.error || "Export failed");
       }
     } catch (err) {
-      error(
-        locale === "pt-BR"
-          ? "Erro inesperado ao exportar JSON"
-          : "Unexpected error exporting JSON"
-      );
+      error("Unexpected error");
     } finally {
       setLoadingJSON(false);
     }
@@ -102,7 +112,6 @@ export default function ExportData() {
     setLoadingReport(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-
       const { start, end } = getWeekRange(currentDate);
       const result = exportWeeklyReport(history, start, end, locale);
 
@@ -112,13 +121,85 @@ export default function ExportData() {
         error(result.error || "Export failed");
       }
     } catch (err) {
-      error(
-        locale === "pt-BR"
-          ? "Erro inesperado ao gerar relatório"
-          : "Unexpected error generating report"
-      );
+      error("Unexpected error");
     } finally {
       setLoadingReport(false);
+    }
+  };
+
+  const handleImportClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileSelect = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Confirm before importing
+    const confirmed = window.confirm(t.confirmImport);
+    if (!confirmed) {
+      // Reset input
+      event.target.value = "";
+      return;
+    }
+
+    setLoadingImport(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      let result;
+
+      // Determine file type and import
+      if (file.name.endsWith(".json")) {
+        result = await importFromJSON(file, locale);
+      } else if (file.name.endsWith(".csv")) {
+        result = await importFromCSV(file, locale);
+      } else {
+        error(
+          locale === "pt-BR"
+            ? "Formato não suportado. Use .json ou .csv"
+            : "Unsupported format. Use .json or .csv"
+        );
+        return;
+      }
+
+      console.log("Import result:", result); // DEBUG
+
+      if (result.success && result.data) {
+        console.log("Imported data:", result.data); // DEBUG
+
+        // Merge imported history with existing
+        const store = useNutritionStore.getState();
+        const mergedHistory = { ...store.history, ...result.data.history };
+
+        console.log("Merged history:", mergedHistory); // DEBUG
+
+        // Update store
+        useNutritionStore.setState({ history: mergedHistory });
+
+        console.log("Store updated!"); // DEBUG
+
+        // Update goals if present
+        if (result.data.goals) {
+          updateGoals(result.data.goals);
+          success(t.importWithGoals);
+        } else {
+          success(t.successImport);
+        }
+      } else {
+        console.error("Import failed:", result.error); // DEBUG
+        error(result.error || "Import failed");
+      }
+    } catch (err) {
+      console.error("Exception during import:", err); // DEBUG
+      error("Unexpected error");
+    } finally {
+      setLoadingImport(false);
+      // Reset input
+      event.target.value = "";
     }
   };
 
@@ -143,7 +224,33 @@ export default function ExportData() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Import Data */}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleImportClick}
+          disabled={loadingImport}
+          className="flex flex-col items-center gap-3 rounded-xl border border-gray-200 bg-gradient-to-br from-orange-50 to-amber-50 p-4 transition-all hover:border-orange-300 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-700 dark:from-orange-950/30 dark:to-amber-950/30 dark:hover:border-orange-600"
+          aria-label={t.importData}
+        >
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white dark:bg-gray-800">
+            {loadingImport ? (
+              <Loader2 className="h-6 w-6 animate-spin text-orange-600 dark:text-orange-500" />
+            ) : (
+              <Upload className="h-6 w-6 text-orange-600 dark:text-orange-500" />
+            )}
+          </div>
+          <div className="text-center">
+            <p className="font-semibold text-gray-900 dark:text-gray-100">
+              {t.importData}
+            </p>
+            <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+              {t.importDataDesc}
+            </p>
+          </div>
+        </motion.button>
+
         {/* CSV Export */}
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -222,6 +329,16 @@ export default function ExportData() {
           </div>
         </motion.button>
       </div>
+
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".json,.csv"
+        onChange={handleFileSelect}
+        className="hidden"
+        aria-label="Import file"
+      />
     </motion.div>
   );
 }
