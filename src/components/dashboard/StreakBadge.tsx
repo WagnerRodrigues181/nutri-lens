@@ -30,41 +30,39 @@ function StreakBadge({ currentStreak, locale }: StreakBadgeProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="flex items-center gap-4 rounded-2xl border border-gray-200 bg-gradient-to-br from-orange-50 to-red-50 p-6 shadow-sm dark:border-gray-700 dark:from-orange-950/30 dark:to-red-950/30"
+      className="flex items-center gap-4 rounded-2xl border border-gray-200/60 dark:border-slate-700/50 bg-white/60 dark:bg-slate-800/40 backdrop-blur-xl p-6 shadow-lg"
     >
       {/* Fire Icon */}
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-lg dark:bg-gray-800">
+      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-red-500 shadow-lg">
         <Flame
           className={`h-8 w-8 ${
-            currentStreak > 0
-              ? "text-orange-500 dark:text-orange-400"
-              : "text-gray-400 dark:text-gray-600"
+            currentStreak > 0 ? "text-white" : "text-white/60"
           }`}
         />
       </div>
 
       {/* Streak Info */}
       <div className="flex-1">
-        <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+        <p className="text-sm font-medium text-gray-600 dark:text-slate-400">
           {t.streak}
         </p>
         <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+          <span className="text-3xl font-bold text-gray-900 dark:text-slate-100">
             {currentStreak}
           </span>
-          <span className="text-sm text-gray-600 dark:text-gray-400">
+          <span className="text-sm text-gray-600 dark:text-slate-400">
             {t.days}
           </span>
         </div>
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
+        <p className="mt-1 text-xs text-gray-500 dark:text-slate-500">
           {currentStreak > 0 ? t.keepGoing : t.startToday}
         </p>
       </div>
 
       {/* Visual Indicator */}
       {currentStreak >= 7 && (
-        <div className="flex items-center justify-center rounded-lg bg-orange-100 px-3 py-1.5 dark:bg-orange-900/30">
-          <span className="text-xs font-semibold text-orange-700 dark:text-orange-400">
+        <div className="flex items-center justify-center rounded-lg bg-orange-500/10 dark:bg-orange-500/20 border border-orange-500/20 dark:border-orange-500/30 px-3 py-1.5">
+          <span className="text-xs font-semibold text-orange-600 dark:text-orange-400">
             🔥 {currentStreak >= 30 ? "🏆" : ""}
           </span>
         </div>

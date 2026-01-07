@@ -82,18 +82,18 @@ function MealList() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+      className="rounded-2xl border border-gray-200/60 dark:border-slate-700/50 bg-white/60 dark:bg-slate-800/40 backdrop-blur-xl p-6 shadow-xl"
     >
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
           {t.title}
         </h3>
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleAddNew}
-          className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/30 dark:bg-green-600 dark:hover:bg-green-700"
+          className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/30"
         >
           <Plus className="h-4 w-4" />
           {t.addMeal}
@@ -127,7 +127,7 @@ function MealList() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <h4 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                <h4 className="mb-3 text-sm font-semibold text-gray-700 dark:text-slate-300">
                   {categoryLabels[category]}
                 </h4>
                 <AnimatePresence mode="popLayout">

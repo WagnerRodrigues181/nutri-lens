@@ -69,14 +69,22 @@ export default function App() {
           </motion.div>
 
           {/* SECTION 1: Today's Overview (Hero Content) */}
-          <section className="space-y-8">
+          <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="rounded-2xl border border-gray-200/60 dark:border-slate-700/50 bg-white/60 dark:bg-slate-800/40 backdrop-blur-xl p-6 shadow-xl space-y-6"
+          >
             <DailyOverview />
 
+            {/* Divider */}
+            <div className="border-t border-gray-200/50 dark:border-slate-700/50" />
+
             {/* Macros Ring */}
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-2">
               <MacrosRing />
             </div>
-          </section>
+          </motion.section>
 
           {/* SECTION 2: Meals (Primary Action Area) */}
           <section className="space-y-6">
