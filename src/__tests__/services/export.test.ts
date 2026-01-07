@@ -169,39 +169,32 @@ describe("export service", () => {
       expect(mockLink.click).toHaveBeenCalled();
     });
 
-    it("should show alert when no data found for period", () => {
-      const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-
-      exportWeeklyReport(
+    it("should return error when no data found for period", () => {
+      const result = exportWeeklyReport(
         mockNutritionHistory,
         "2025-12-01",
         "2025-12-07",
         "pt-BR"
       );
 
-      expect(alertSpy).toHaveBeenCalledWith(
+      expect(result.success).toBe(false);
+      expect(result.error).toBe(
         "Nenhum dado encontrado para o período selecionado"
       );
       expect(mockLink.click).not.toHaveBeenCalled();
-
-      alertSpy.mockRestore();
     });
 
-    it("should show alert in en-US when no data found", () => {
-      const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-
-      exportWeeklyReport(
+    it("should return error in en-US when no data found", () => {
+      const result = exportWeeklyReport(
         mockNutritionHistory,
         "2025-12-01",
         "2025-12-07",
         "en-US"
       );
 
-      expect(alertSpy).toHaveBeenCalledWith(
-        "No data found for the selected period"
-      );
-
-      alertSpy.mockRestore();
+      expect(result.success).toBe(false);
+      expect(result.error).toBe("No data found for the selected period");
+      expect(mockLink.click).not.toHaveBeenCalled();
     });
 
     it("should format CSV with proper headers and averages in pt-BR", () => {
