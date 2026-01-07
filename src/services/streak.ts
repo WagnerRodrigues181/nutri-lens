@@ -1,5 +1,5 @@
 import type { NutritionHistory, DailyGoals } from "@/types";
-import { format, subDays, parseISO } from "date-fns";
+import { format, subDays, parseISO, differenceInDays } from "date-fns";
 import { calculateProgress } from "../utils/calculations";
 
 export const isDayGoalMet = (
@@ -40,21 +40,36 @@ export const calculateCurrentStreak = (
   history: NutritionHistory,
   goals: DailyGoals
 ): number => {
+  const allDates = Object.keys(history)
+    .filter((date) => history[date].meals.length > 0)
+    .sort()
+    .reverse();
+
+  if (allDates.length === 0) return 0;
+
   let streak = 0;
-  let currentDate = new Date();
+  let expectedDate = parseISO(allDates[0]); // Start from most recent date with data
 
-  // Check backwards from today
-  for (let i = 0; i < 365; i++) {
-    // Max 365 days lookback
-    const dateStr = format(currentDate, "yyyy-MM-dd");
+  for (const dateStr of allDates) {
+    const currentDate = parseISO(dateStr);
 
-    // If we reach a day that didn't meet goals, stop counting
+    // Check if this date is the expected consecutive date
+    const daysDiff = differenceInDays(expectedDate, currentDate);
+
+    // If gap is more than 0 days, streak is broken
+    if (daysDiff > 0) {
+      break;
+    }
+
+    // Check if this day met the goals
     if (!isDayGoalMet(history, dateStr, goals)) {
       break;
     }
 
     streak++;
-    currentDate = subDays(currentDate, 1);
+
+    // Next expected date is one day before current
+    expectedDate = subDays(currentDate, 1);
   }
 
   return streak;
@@ -80,10 +95,7 @@ export const calculateLongestStreak = (
 
     if (isDayGoalMet(history, dateStr, goals)) {
       if (previousDate) {
-        const daysDiff = Math.round(
-          (currentDate.getTime() - previousDate.getTime()) /
-            (1000 * 60 * 60 * 24)
-        );
+        const daysDiff = differenceInDays(currentDate, previousDate);
 
         if (daysDiff === 1) {
           currentStreak++;
