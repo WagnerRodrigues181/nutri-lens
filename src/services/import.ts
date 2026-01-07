@@ -159,9 +159,16 @@ export const importFromCSV = async (
       meals: "meals",
       calories: "calories",
       protein: "protein",
+      "protein (g)": "protein",
       carbs: "carbs",
+      "carbs (g)": "carbs",
       fat: "fat",
+      "fat (g)": "fat",
       water: "water",
+      "water (l)": "water",
+      // Additional mappings
+      meal_name: "meal_name",
+      category: "category",
     };
 
     // Normalize header
@@ -216,7 +223,7 @@ export const importFromCSV = async (
         history[date] = {
           date,
           meals: [],
-          water: water,
+          water: 0,
           totalMacros: {
             calories: 0,
             protein: 0,
@@ -246,11 +253,11 @@ export const importFromCSV = async (
 
         history[date].meals.push(meal);
 
-        // Update totals
         history[date].totalMacros.calories += calories;
         history[date].totalMacros.protein += protein;
         history[date].totalMacros.carbs += carbs;
         history[date].totalMacros.fat += fat;
+        history[date].water += water;
       }
       // If this is aggregated data (no meal_name), create a summary meal
       else if (calories > 0) {
@@ -273,6 +280,7 @@ export const importFromCSV = async (
           carbs: carbs,
           fat: fat,
         };
+        history[date].water = water;
       }
     }
 
