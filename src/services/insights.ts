@@ -1,4 +1,4 @@
-import type { Insight, InsightType, DailyGoals, Macros } from "@/types";
+import type { Insight, DailyGoals, Macros } from "@/types";
 import { calculateGoalsProgress } from "@/utils/calculations";
 
 interface InsightGeneratorParams {

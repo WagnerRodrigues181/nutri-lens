@@ -1,5 +1,5 @@
 import type { NutritionHistory, DailyGoals, Statistics } from "@/types";
-import { getLastNDays, parseDate } from "../utils/dateHelpers";
+import { getLastNDays } from "../utils/dateHelpers";
 import { calculateProgress } from "../utils/calculations";
 
 /**
