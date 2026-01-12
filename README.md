@@ -6,7 +6,7 @@
 
 **Rastreador nutricional completo com análise de macros, visualização de dados e alta cobertura de testes.**
 
-• [Ver Demo](#) • 
+• [Ver Demo](https://nutrilens-pearl.vercel.app/) • 
 
 </div>
 
