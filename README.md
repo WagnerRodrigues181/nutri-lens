@@ -69,7 +69,7 @@ Dashboard interativo com tracking em tempo real, múltiplas visualizações de d
 ## 🛠️ Stack Técnica
 
 **Core**
-- React 18 + TypeScript 5
+- React 19 + TypeScript 5
 - Vite (build tool)
 - Zustand (state management)
 - Tailwind CSS + shadcn/ui
