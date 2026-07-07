@@ -7,10 +7,10 @@ import {
 import { mockNutritionHistory, mockGoals } from "../mockData";
 
 describe("export service", () => {
-  let createElementSpy: any;
-  let createObjectURLSpy: any;
-  let revokeObjectURLSpy: any;
-  let mockLink: any;
+  let createElementSpy: ReturnType<typeof vi.spyOn>;
+  let createObjectURLSpy: ReturnType<typeof vi.spyOn>;
+  let revokeObjectURLSpy: ReturnType<typeof vi.spyOn>;
+  let mockLink: HTMLAnchorElement;
 
   beforeEach(() => {
     mockLink = {
@@ -18,11 +18,11 @@ describe("export service", () => {
       download: "",
       click: vi.fn(),
       setAttribute: vi.fn(),
-    };
+    } as unknown as HTMLAnchorElement;
 
     createElementSpy = vi
       .spyOn(document, "createElement")
-      .mockReturnValue(mockLink as any);
+      .mockReturnValue(mockLink);
 
     vi.spyOn(document.body, "appendChild").mockImplementation(() => mockLink);
     vi.spyOn(document.body, "removeChild").mockImplementation(() => mockLink);
@@ -144,7 +144,7 @@ describe("export service", () => {
         mockNutritionHistory,
         "2024-01-14",
         "2024-01-15",
-        "pt-BR"
+        "pt-BR",
       );
 
       expect(createElementSpy).toHaveBeenCalledWith("a");
@@ -161,7 +161,7 @@ describe("export service", () => {
         mockNutritionHistory,
         "2024-01-14",
         "2024-01-15",
-        "en-US"
+        "en-US",
       );
 
       expect(createElementSpy).toHaveBeenCalledWith("a");
@@ -174,12 +174,12 @@ describe("export service", () => {
         mockNutritionHistory,
         "2025-12-01",
         "2025-12-07",
-        "pt-BR"
+        "pt-BR",
       );
 
       expect(result.success).toBe(false);
       expect(result.error).toBe(
-        "Nenhum dado encontrado para o período selecionado"
+        "Nenhum dado encontrado para o período selecionado",
       );
       expect(mockLink.click).not.toHaveBeenCalled();
     });
@@ -189,7 +189,7 @@ describe("export service", () => {
         mockNutritionHistory,
         "2025-12-01",
         "2025-12-07",
-        "en-US"
+        "en-US",
       );
 
       expect(result.success).toBe(false);
@@ -209,7 +209,7 @@ describe("export service", () => {
         mockNutritionHistory,
         "2024-01-14",
         "2024-01-15",
-        "pt-BR"
+        "pt-BR",
       );
 
       expect(capturedBlob).not.toBeNull();
@@ -238,7 +238,7 @@ describe("export service", () => {
         mockNutritionHistory,
         "2024-01-14",
         "2024-01-15",
-        "en-US"
+        "en-US",
       );
 
       expect(capturedBlob).not.toBeNull();

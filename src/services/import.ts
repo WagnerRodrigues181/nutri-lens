@@ -57,7 +57,7 @@ const validateGoals = (data: unknown): data is DailyGoals => {
  */
 export const importFromJSON = async (
   file: File,
-  locale: "pt-BR" | "en-US"
+  locale: "pt-BR" | "en-US",
 ): Promise<ImportResult> => {
   try {
     // Check file type
@@ -98,7 +98,7 @@ export const importFromJSON = async (
       success: true,
       data: result,
     };
-  } catch (err) {
+  } catch {
     return {
       success: false,
       error:
@@ -114,7 +114,7 @@ export const importFromJSON = async (
  */
 export const importFromCSV = async (
   file: File,
-  locale: "pt-BR" | "en-US"
+  locale: "pt-BR" | "en-US",
 ): Promise<ImportResult> => {
   try {
     // Check file type
@@ -288,7 +288,7 @@ export const importFromCSV = async (
       success: true,
       data: { history },
     };
-  } catch (err) {
+  } catch {
     return {
       success: false,
       error:

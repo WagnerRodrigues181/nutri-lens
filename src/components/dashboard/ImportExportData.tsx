@@ -83,7 +83,7 @@ export default function ImportExportData() {
       } else {
         error(result.error || "Export failed");
       }
-    } catch (err) {
+    } catch {
       error("Unexpected error");
     } finally {
       setLoadingCSV(false);
@@ -101,7 +101,7 @@ export default function ImportExportData() {
       } else {
         error(result.error || "Export failed");
       }
-    } catch (err) {
+    } catch {
       error("Unexpected error");
     } finally {
       setLoadingJSON(false);
@@ -120,7 +120,7 @@ export default function ImportExportData() {
       } else {
         error(result.error || "Export failed");
       }
-    } catch (err) {
+    } catch {
       error("Unexpected error");
     } finally {
       setLoadingReport(false);
@@ -132,7 +132,7 @@ export default function ImportExportData() {
   };
 
   const handleFileSelect = async (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -161,7 +161,7 @@ export default function ImportExportData() {
         error(
           locale === "pt-BR"
             ? "Formato não suportado. Use .json ou .csv"
-            : "Unsupported format. Use .json or .csv"
+            : "Unsupported format. Use .json or .csv",
         );
         return;
       }
