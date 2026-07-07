@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { BarChart3, TrendingUp, TrendingDown, Target } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNutritionStore } from "@/store/useNutritionStore";
@@ -162,7 +161,7 @@ function StatisticsPanel() {
                 {formatDateWithLocale(
                   stats.bestDay.date,
                   locale,
-                  "dd MMM yyyy"
+                  "dd MMM yyyy",
                 )}
               </p>
               <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
@@ -183,7 +182,7 @@ function StatisticsPanel() {
                 {formatDateWithLocale(
                   stats.worstDay.date,
                   locale,
-                  "dd MMM yyyy"
+                  "dd MMM yyyy",
                 )}
               </p>
               <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
@@ -208,7 +207,7 @@ function StatisticsPanel() {
             </p>
             <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
               {((stats.goalsMetCount / stats.totalDaysTracked) * 100).toFixed(
-                0
+                0,
               )}
               % {t.ofDays}
             </p>
@@ -232,4 +231,4 @@ function StatisticsPanel() {
   );
 }
 
-export default memo(StatisticsPanel);
+export default StatisticsPanel;

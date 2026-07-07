@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { Lock } from "lucide-react";
 import { motion } from "framer-motion";
 import type { Achievement } from "@/types";
@@ -75,4 +74,4 @@ function AchievementBadge({ achievement, delay = 0 }: AchievementBadgeProps) {
   );
 }
 
-export default memo(AchievementBadge);
+export default AchievementBadge;

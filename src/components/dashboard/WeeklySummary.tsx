@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { TrendingUp, Calendar, UtensilsCrossed } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSettingsStore } from "@/store/useSettingsStore";
@@ -182,4 +181,4 @@ function WeeklySummary() {
   );
 }
 
-export default memo(WeeklySummary);
+export default WeeklySummary;

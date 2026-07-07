@@ -1,4 +1,3 @@
-import { memo } from "react";
 import {
   BarChart,
   Bar,
@@ -9,11 +8,60 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import type { TooltipContentProps } from "recharts";
+import type {
+  ValueType,
+  NameType,
+} from "recharts/types/component/DefaultTooltipContent";
 import { BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { useNutritionData } from "@/hooks/useNutritionData";
 import { formatDateWithLocale } from "@/utils/dateHelpers";
+
+interface TooltipPayloadItem {
+  name: string;
+  value: number;
+  color?: string;
+  payload: {
+    date: string;
+    [key: string]: string | number;
+  };
+}
+
+interface CustomTooltipProps extends TooltipContentProps<ValueType, NameType> {
+  translations: {
+    calories: string;
+    protein: string;
+    carbs: string;
+  };
+}
+
+function CustomTooltip({ active, payload, translations }: CustomTooltipProps) {
+  if (active && payload && payload.length) {
+    const t = translations;
+    const items = payload as unknown as TooltipPayloadItem[];
+    return (
+      <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          {items[0].payload.date}
+        </p>
+        <div className="mt-2 space-y-1">
+          {items.map((entry, index) => (
+            <p key={index} className="text-sm" style={{ color: entry.color }}>
+              {entry.name}:{" "}
+              <span className="font-bold">
+                {entry.name === t.calories ? entry.value * 10 : entry.value}
+                {entry.name === t.calories ? " kcal" : "g"}
+              </span>
+            </p>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  return null;
+}
 
 function WeeklyBarChart() {
   const { locale } = useSettingsStore();
@@ -46,30 +94,6 @@ function WeeklyBarChart() {
     [t.protein]: Math.round(day.protein),
     [t.carbs]: Math.round(day.carbs),
   }));
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            {payload[0].payload.date}
-          </p>
-          <div className="mt-2 space-y-1">
-            {payload.map((entry: any, index: number) => (
-              <p key={index} className="text-sm" style={{ color: entry.color }}>
-                {entry.name}:{" "}
-                <span className="font-bold">
-                  {entry.name === t.calories ? entry.value * 10 : entry.value}
-                  {entry.name === t.calories ? " kcal" : "g"}
-                </span>
-              </p>
-            ))}
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <motion.div
@@ -112,7 +136,9 @@ function WeeklyBarChart() {
             style={{ fontSize: "12px" }}
             stroke="currentColor"
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip
+            content={(props) => <CustomTooltip {...props} translations={t} />}
+          />
           <Legend
             wrapperStyle={{ fontSize: "14px", paddingTop: "20px" }}
             iconType="square"
@@ -126,4 +152,4 @@ function WeeklyBarChart() {
   );
 }
 
-export default memo(WeeklyBarChart);
+export default WeeklyBarChart;

@@ -1,4 +1,3 @@
-import { memo } from "react";
 import {
   AreaChart,
   Area,
@@ -9,11 +8,62 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import type { TooltipContentProps } from "recharts";
+import type {
+  ValueType,
+  NameType,
+} from "recharts/types/component/DefaultTooltipContent";
 import { TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { useNutritionData } from "@/hooks/useNutritionData";
 import { formatDateWithLocale } from "@/utils/dateHelpers";
+
+interface TooltipPayloadItem {
+  name: string;
+  value: number;
+  payload: {
+    date: string;
+    [key: string]: string | number;
+  };
+}
+
+interface CustomTooltipProps extends TooltipContentProps<ValueType, NameType> {
+  translations: {
+    calories: string;
+    protein: string;
+    carbs: string;
+  };
+}
+
+function CustomTooltip({ active, payload, translations }: CustomTooltipProps) {
+  if (active && payload && payload.length) {
+    const t = translations;
+    const items = payload as unknown as TooltipPayloadItem[];
+    return (
+      <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          {items[0].payload.date}
+        </p>
+        <div className="mt-2 space-y-1">
+          <p className="text-sm text-green-600 dark:text-green-500">
+            {t.calories}:{" "}
+            <span className="font-bold">{items[0].value} kcal</span>
+          </p>
+          <p className="text-sm text-red-600 dark:text-red-500">
+            {t.protein}:{" "}
+            <span className="font-bold">{Math.round(items[1].value / 4)}g</span>
+          </p>
+          <p className="text-sm text-amber-600 dark:text-amber-500">
+            {t.carbs}:{" "}
+            <span className="font-bold">{Math.round(items[2].value / 4)}g</span>
+          </p>
+        </div>
+      </div>
+    );
+  }
+  return null;
+}
 
 function ProgressAreaChart() {
   const { locale } = useSettingsStore();
@@ -46,37 +96,6 @@ function ProgressAreaChart() {
     [t.protein]: Math.round(day.protein * 4),
     [t.carbs]: Math.round(day.carbs * 4),
   }));
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            {payload[0].payload.date}
-          </p>
-          <div className="mt-2 space-y-1">
-            <p className="text-sm text-green-600 dark:text-green-500">
-              {t.calories}:{" "}
-              <span className="font-bold">{payload[0].value} kcal</span>
-            </p>
-            <p className="text-sm text-red-600 dark:text-red-500">
-              {t.protein}:{" "}
-              <span className="font-bold">
-                {Math.round(payload[1].value / 4)}g
-              </span>
-            </p>
-            <p className="text-sm text-amber-600 dark:text-amber-500">
-              {t.carbs}:{" "}
-              <span className="font-bold">
-                {Math.round(payload[2].value / 4)}g
-              </span>
-            </p>
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <motion.div
@@ -133,7 +152,9 @@ function ProgressAreaChart() {
             style={{ fontSize: "12px" }}
             stroke="currentColor"
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip
+            content={(props) => <CustomTooltip {...props} translations={t} />}
+          />
           <Legend
             wrapperStyle={{ fontSize: "14px", paddingTop: "20px" }}
             iconType="line"
@@ -168,4 +189,4 @@ function ProgressAreaChart() {
   );
 }
 
-export default memo(ProgressAreaChart);
+export default ProgressAreaChart;

@@ -1,4 +1,3 @@
-import { memo } from "react";
 import {
   Edit2,
   Trash2,
@@ -171,4 +170,4 @@ function MealCard({ meal, onEdit, onDelete }: MealCardProps) {
   );
 }
 
-export default memo(MealCard);
+export default MealCard;

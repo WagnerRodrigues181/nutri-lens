@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { Target } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNutritionStore } from "@/store/useNutritionStore";
@@ -151,4 +150,4 @@ function MacrosRing() {
   );
 }
 
-export default memo(MacrosRing);
+export default MacrosRing;

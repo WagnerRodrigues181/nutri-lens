@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { Lightbulb } from "lucide-react";
 import { motion } from "framer-motion";
 import { useSettingsStore } from "@/store/useSettingsStore";
@@ -60,4 +59,4 @@ function InsightsList({ currentStreak = 0 }: InsightsListProps) {
   );
 }
 
-export default memo(InsightsList);
+export default InsightsList;

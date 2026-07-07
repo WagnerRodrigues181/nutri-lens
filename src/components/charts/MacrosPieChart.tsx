@@ -6,18 +6,55 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
+import type { TooltipContentProps, PieLabelRenderProps } from "recharts";
+import type {
+  ValueType,
+  NameType,
+} from "recharts/types/component/DefaultTooltipContent";
 import { Activity } from "lucide-react";
 import { useNutritionStore } from "@/store/useNutritionStore";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { calculateMacroDistribution } from "@/utils/calculations";
 
+interface MacroTooltipPayload {
+  name: string;
+  value: number;
+  payload: {
+    name: string;
+    value: number;
+    color: string;
+  };
+}
+
+function CustomTooltip({
+  active,
+  payload,
+}: TooltipContentProps<ValueType, NameType>) {
+  if (active && payload && payload.length) {
+    const items = payload as unknown as MacroTooltipPayload[];
+    const data = items[0];
+    return (
+      <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          {data.name}
+        </p>
+        <p
+          className="mt-1 text-lg font-bold"
+          style={{ color: data.payload.color }}
+        >
+          {data.value}%
+        </p>
+      </div>
+    );
+  }
+  return null;
+}
+
 export default function MacrosPieChart() {
   const { getCurrentDayData } = useNutritionStore();
   const { locale } = useSettingsStore();
-
   const dayData = getCurrentDayData();
   const { totalMacros } = dayData;
-
   const distribution = calculateMacroDistribution(totalMacros);
 
   const translations = {
@@ -38,7 +75,6 @@ export default function MacrosPieChart() {
       noData: "No data to display",
     },
   };
-
   const t = translations[locale];
 
   const chartData = [
@@ -49,26 +85,6 @@ export default function MacrosPieChart() {
 
   const hasData = totalMacros.calories > 0;
 
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0];
-      return (
-        <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            {data.name}
-          </p>
-          <p
-            className="mt-1 text-lg font-bold"
-            style={{ color: data.payload.color }}
-          >
-            {data.value}%
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
   const renderCustomLabel = ({
     cx,
     cy,
@@ -76,10 +92,26 @@ export default function MacrosPieChart() {
     innerRadius,
     outerRadius,
     percent,
-  }: any) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
-    const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
+  }: PieLabelRenderProps) => {
+    if (
+      cx === undefined ||
+      cy === undefined ||
+      midAngle === undefined ||
+      innerRadius === undefined ||
+      outerRadius === undefined ||
+      percent === undefined
+    ) {
+      return null;
+    }
+
+    const numCx = Number(cx);
+    const numCy = Number(cy);
+    const numInner = Number(innerRadius);
+    const numOuter = Number(outerRadius);
+
+    const radius = numInner + (numOuter - numInner) * 0.5;
+    const x = numCx + radius * Math.cos(-midAngle * (Math.PI / 180));
+    const y = numCy + radius * Math.sin(-midAngle * (Math.PI / 180));
 
     if (percent < 0.05) return null;
 
@@ -88,7 +120,7 @@ export default function MacrosPieChart() {
         x={x}
         y={y}
         fill="white"
-        textAnchor={x > cx ? "start" : "end"}
+        textAnchor={x > numCx ? "start" : "end"}
         dominantBaseline="central"
         className="text-sm font-bold"
       >
@@ -112,7 +144,6 @@ export default function MacrosPieChart() {
           <Activity className="h-6 w-6 text-indigo-600 dark:text-indigo-500" />
         </div>
       </div>
-
       {hasData ? (
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
@@ -130,7 +161,7 @@ export default function MacrosPieChart() {
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={(props) => <CustomTooltip {...props} />} />
             <Legend
               verticalAlign="bottom"
               height={36}
@@ -144,7 +175,6 @@ export default function MacrosPieChart() {
           <p className="text-sm text-gray-500 dark:text-gray-400">{t.noData}</p>
         </div>
       )}
-
       {hasData && (
         <div className="mt-6 grid grid-cols-3 gap-4 border-t border-gray-200 pt-6 dark:border-gray-700">
           <div className="text-center">
@@ -161,7 +191,6 @@ export default function MacrosPieChart() {
               {totalMacros.protein.toFixed(1)}g
             </p>
           </div>
-
           <div className="text-center">
             <div className="mb-1 flex items-center justify-center gap-2">
               <div className="h-3 w-3 rounded-full bg-amber-500" />
@@ -176,7 +205,6 @@ export default function MacrosPieChart() {
               {totalMacros.carbs.toFixed(1)}g
             </p>
           </div>
-
           <div className="text-center">
             <div className="mb-1 flex items-center justify-center gap-2">
               <div className="h-3 w-3 rounded-full bg-indigo-500" />

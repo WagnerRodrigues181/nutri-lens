@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { CheckCircle, AlertCircle, Info, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
 import type { Insight } from "@/types";
@@ -70,4 +69,4 @@ function InsightCard({ insight, delay = 0 }: InsightCardProps) {
   );
 }
 
-export default memo(InsightCard);
+export default InsightCard;

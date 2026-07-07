@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNutritionStore } from "@/store/useNutritionStore";
@@ -45,7 +44,7 @@ function DateNavigator() {
   const formattedDate = formatDateWithLocale(
     currentDate,
     locale,
-    "EEEE, dd 'de' MMMM 'de' yyyy"
+    "EEEE, dd 'de' MMMM 'de' yyyy",
   );
 
   return (
@@ -108,4 +107,4 @@ function DateNavigator() {
   );
 }
 
-export default memo(DateNavigator);
+export default DateNavigator;

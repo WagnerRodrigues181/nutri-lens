@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { Trophy } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNutritionStore } from "@/store/useNutritionStore";
@@ -64,4 +63,4 @@ function AchievementsList({ currentStreak = 0 }: AchievementsListProps) {
   );
 }
 
-export default memo(AchievementsList);
+export default AchievementsList;

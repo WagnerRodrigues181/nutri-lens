@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { motion } from "framer-motion";
 
 interface CircularProgressProps {
@@ -138,4 +137,4 @@ function CircularProgress({
   );
 }
 
-export default memo(CircularProgress);
+export default CircularProgress;

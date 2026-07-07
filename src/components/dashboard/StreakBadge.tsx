@@ -1,6 +1,5 @@
 import { Flame } from "lucide-react";
 import { motion } from "framer-motion";
-import { memo } from "react";
 
 interface StreakBadgeProps {
   currentStreak: number;
@@ -71,4 +70,4 @@ function StreakBadge({ currentStreak, locale }: StreakBadgeProps) {
   );
 }
 
-export default memo(StreakBadge);
+export default StreakBadge;

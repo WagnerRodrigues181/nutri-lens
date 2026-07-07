@@ -8,32 +8,64 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import type { TooltipContentProps } from "recharts";
+import type {
+  ValueType,
+  NameType,
+} from "recharts/types/component/DefaultTooltipContent";
 import { TrendingUp } from "lucide-react";
 import { useSettingsStore } from "@/store/useSettingsStore";
 import { useNutritionData } from "@/hooks/useNutritionData";
 import { formatDateWithLocale } from "@/utils/dateHelpers";
 
+const translations = {
+  "pt-BR": {
+    title: "Evolução de Calorias",
+    subtitle: "Últimos 7 dias",
+    calories: "Calorias",
+    goal: "Meta",
+  },
+  "en-US": {
+    title: "Calories Evolution",
+    subtitle: "Last 7 days",
+    calories: "Calories",
+    goal: "Goal",
+  },
+};
+
+type ChartLabels = { calories: string; goal: string };
+
+function CustomTooltip({
+  active,
+  payload,
+  labels,
+}: TooltipContentProps<ValueType, NameType> & { labels: ChartLabels }) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+        <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+          {payload[0].payload.date}
+        </p>
+        <div className="mt-2 space-y-1">
+          <p className="text-sm text-green-600 dark:text-green-500">
+            {labels.calories}:{" "}
+            <span className="font-bold">{payload[0].value} kcal</span>
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {labels.goal}:{" "}
+            <span className="font-semibold">{payload[1].value} kcal</span>
+          </p>
+        </div>
+      </div>
+    );
+  }
+  return null;
+}
+
 export default function CaloriesLineChart() {
   const { locale, goals } = useSettingsStore();
   const { getLastDaysData } = useNutritionData();
-
   const weekData = getLastDaysData(7);
-
-  const translations = {
-    "pt-BR": {
-      title: "Evolução de Calorias",
-      subtitle: "Últimos 7 dias",
-      calories: "Calorias",
-      goal: "Meta",
-    },
-    "en-US": {
-      title: "Calories Evolution",
-      subtitle: "Last 7 days",
-      calories: "Calories",
-      goal: "Goal",
-    },
-  };
-
   const t = translations[locale];
 
   const chartData = weekData.map((day) => ({
@@ -41,29 +73,6 @@ export default function CaloriesLineChart() {
     calories: Math.round(day.calories),
     goal: goals.calories,
   }));
-
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="rounded-lg border border-gray-200 bg-white p-3 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-            {payload[0].payload.date}
-          </p>
-          <div className="mt-2 space-y-1">
-            <p className="text-sm text-green-600 dark:text-green-500">
-              {t.calories}:{" "}
-              <span className="font-bold">{payload[0].value} kcal</span>
-            </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {t.goal}:{" "}
-              <span className="font-semibold">{payload[1].value} kcal</span>
-            </p>
-          </div>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
@@ -101,7 +110,14 @@ export default function CaloriesLineChart() {
             style={{ fontSize: "12px" }}
             stroke="currentColor"
           />
-          <Tooltip content={<CustomTooltip />} />
+          <Tooltip
+            content={(props) => (
+              <CustomTooltip
+                {...props}
+                labels={{ calories: t.calories, goal: t.goal }}
+              />
+            )}
+          />
           <Legend
             wrapperStyle={{ fontSize: "14px", paddingTop: "20px" }}
             iconType="line"
